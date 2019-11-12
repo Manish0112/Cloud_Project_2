@@ -29,6 +29,7 @@
   </nav>
   <br/><br/>
   <div class="container">
+  <h4><center>Upload Prescription!</center></h4>
   <% include ./partials/messages %>
   <br />
   <%= typeof msg != 'undefined' ? msg : '' %>
@@ -36,7 +37,7 @@
       <div class="file-field input-field">
         <div class="btn grey">
           <span>File</span>
-          <input name="myImage" type="file">
+          <input name="myPrescription" type="file">
         </div>
         <input type="hidden" name=user value=<%=user.name %>>
         <div class="file-path-wrapper">

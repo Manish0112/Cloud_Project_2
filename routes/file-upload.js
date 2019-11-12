@@ -6,14 +6,13 @@ const keys = require("../config/keys");
 const Files= require('./../models/files');
 
  const storage = multer.memoryStorage();
- const upload = multer({storage: storage, limits: {fileSize: 10 * 1024 * 1024}}).single('myImage');
+ const upload = multer({storage: storage, limits: {fileSize: 10 * 1024 * 1024}}).single('myPrescription');
 
 
 router.post('/', (req, res) => {
 
   upload(req, res, (err) => {
-    // console.log('User is');
-    // console.log(req.user);
+    
     const moment = require('moment');    
     //File Upload started
     var startDate = new Date();
