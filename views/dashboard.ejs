@@ -10,10 +10,13 @@
           <a class="nav-link" href="#">Welcome <%=user.name %> <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Prescriptions</a>
+          <a class="nav-link" href="/files">Prescriptions</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">My Schedules</a>
+          <a class="nav-link" href="#">Schedules</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/listUsers">Users</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">About</a>
@@ -25,6 +28,7 @@
     </div>
   </nav>
   <br/><br/>
+  <div class="container">
   <% include ./partials/messages %>
   <br />
   <%= typeof msg != 'undefined' ? msg : '' %>
@@ -39,62 +43,6 @@
           <input class="file-path validate" type="text">
         </div>
       </div>
-      <button type="submit" class="btn">Upload</button>
+      <button type="submit" class="btn btn-primary">Upload</button>
     </form>
-    <br/><br/>
-    <br/><br/> 
-    <h4><u>File Details</u></h4>
-    <table>
-      <thead>
-        <tr>
-            <th>User Name</th>
-            <th>File Name</th>
-            <th>Upload Time</th>
-            <th>Download</th>
-            <th>File</th>
-        </tr>
-      </thead>
-      <% var cf = 'http://d27lfrksus1mpj.cloudfront.net/'%>
-      <tbody>
-          <% data.forEach(function (data) { %>
-          <form action="/delete" method="POST">
-            <tr>
-                    <td><%= data.user %></td>
-                    <td><%= data.fileName %></td>
-                    <td><%= data.uploadTime %></td>
-                    <td><a href='<%=cf + data.fileName %>'><i class="medium fas fa-file-download"></i></a></td>
-                    <td><button type='submit' class='btn' name='<%= data.fileUrl %>'>Delete</button></td>
-                    <input type='hidden' id='email' name='email' value='<%= data.email %>'>
-                    <input type='hidden' id='fileUrl' name='fileUrl' value='<%= data.fileUrl %>'>
-              </tr>
-            </form>
-            <% }) %>
-      </tbody>
-    </table>
-
-    <br/><br/>
-    <br/><br/> 
-    <%if (logins.length > 0) { %>
-      <h4><u>User Details</u></h4>
-    <table>
-        <thead>
-          <tr>
-              <th>User Name</th>
-              <th>Email</th>
-          </tr>
-        </thead>
-  
-        <tbody>
-            <% logins.forEach(function (logins) { %>
-              <tr>
-                  <td><%=logins.name %></td>
-                  <td><%=logins.email %></td>
-              </tr>
-          <% }) %>
-          
-        </tbody>
-      </table>
-
-      <br/><br/>
-    <br/><br/> 
-      <% } %>
+  </div>

@@ -107,7 +107,6 @@ router.get('/dashboard',ensureAuthenticated,(req,res)=>{
         // }
 
         Files.find({ email : req.user.email },(err, data) => {
-            console.log(data);
             res.render('dashboard',{
                 
                 user: currentuser,
@@ -118,6 +117,40 @@ router.get('/dashboard',ensureAuthenticated,(req,res)=>{
     }
 });
 
+//prescriptions
+router.get('/files',ensureAuthenticated,(req,res)=>{
 
+    const currentuser =req.user;
+    const email = req.user.email;
+    
+    Files.find({ email : req.user.email },(err, data) => {
+        
+        res.render('files',{
+            
+            user: currentuser,
+            data: data,
+            logins: {}
+        })
+    })
+});
+
+//list of all users
+router.get('/listUsers',ensureAuthenticated,(req,res)=>{
+
+    const currentuser =req.user;
+    const email = req.user.email;
+    
+    User.find({ level: { $ne: 'A' }},(err, output) => {
+        // console.log(output);
+        Files.find({},(err, data) => {
+            
+            res.render('users',{
+                user: currentuser,
+                data: data,
+                logins: output
+            })
+        })
+    })
+});
 
 module.exports=router;
