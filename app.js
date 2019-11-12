@@ -55,6 +55,8 @@ app.use('/',require('./routes/index'));
 app.use('/users',require('./routes/users'));
 app.use('/upload',require('./routes/file-upload'));
 app.use('/delete',require('./routes/file-delete'));
+app.use('/process',require('./routes/file-process'));
+
 
 const PORT = process.env.PORT || 5000;
 
