@@ -7,14 +7,19 @@ const keys = require("../config/keys");
 const Files= require('../models/files');
 const fs = require('fs');
 const path = require('path');
+var qtyfound=new Boolean("false");
+var expiryfound=new Boolean("false");
+var startfound=new Boolean("false");
+var docfound=new Boolean("false");
 
 
  const storage = multer.memoryStorage();
  const upload = multer({storage: storage, limits: {fileSize: 10 * 1024 * 1024}}).single('myImage');
 
-
 router.post('/', (req, res) => {
 
+  var i = "DATE FILLED: 11/21/2121".indexOf("DATE FILLED:");
+console.log(i);
   upload(req, res, (err) => {
     // console.log('User is');
     // console.log(req.user);
@@ -30,30 +35,34 @@ router.post('/', (req, res) => {
      // console.log(req.file);
 
       console.log("File Name is : "+req.file.originalname);
-      console.log("File Path is : "+file);
-      console.log(file);
+      // console.log("File Path is : "+file);
+      // console.log(file);
 
       let student = JSON.parse(file.buffer);
       console.log('#####################################################');
-      console.log("Pring JSON");
-      console.log(student.Blocks.Geometry);
+      //console.log("Pring JSON");
+      
       
 var keyArray = Object.keys(student); // key1
-console.log(keyArray);
+//console.log(keyArray);
 //console.log(student[(keyArray[0])]); // value
-console.log('#####################################################');
-console.log("Array length is "+keyArray.length);
-console.log('#####################################################');
+//console.log('#####################################################');
+//console.log("Array length is "+keyArray.length);
+//console.log('#####################################################');
 // for (var i=0; i<data.userContacts.values.length; i++){
 //   console.log(data.userContacts.values[i].nameValuePairs.contactName,
 //               data.userContacts.values[i].nameValuePairs.contactPhone)
 // }
 //console.log("Printing JSON");
 //console.log(student.Blocks[0].Geometry);
-getTabDataByTine(student,"MORNING");
-getTabDataByTine(student,"MIDDAY");
-getTabDataByTine(student,"EVENING");
-getTabDataByTine(student,"BEDTIME");
+qtyfound=false;
+expiryfound=false;
+startfound=false;
+docfound=false;
+getTabDataByTime(student,"MORNING");
+getTabDataByTime(student,"MIDDAY");
+getTabDataByTime(student,"EVENING");
+getTabDataByTime(student,"BEDTIME");
 
 
 
@@ -61,19 +70,44 @@ getTabDataByTine(student,"BEDTIME");
       console.log('#####################################################');
       //console.log(student);
 
+       qtyfound=false;
+       expiryfound=false;
+       startfound=false;
+       docfound=false;
       console.log('This is after the read call');
     
   });
 });
 
 
-async function getTabDataByTine(student,text) {
-  console.log("In function ");
-
+async function getTabDataByTime(student,text) {
+ 
   for (var i=0; i<student.Blocks.length; i++){
-  
+  var jText=new String(student.Blocks[i].Text);
+
+  if (!docfound && jText.indexOf("PRSCBR") >= 0 && student.Blocks[i].BlockType == "LINE"){
+    console.log("Prescribed By");
+    console.log(jText.replace("PRSCBR:",'').trim());
+    docfound=true;
+  }
+    if (!expiryfound && jText.indexOf("DISCARD AFTER")>= 0 && student.Blocks[i].BlockType == "LINE"){
+      console.log("Expiration Date");
+      console.log(jText.replace("DISCARD AFTER:",'').trim());
+      expiryfound=true;
+    }
+    if (!startfound && jText.indexOf("DATE FILLED")>= 0 && student.Blocks[i].BlockType == "LINE"){
+      console.log("Start Date");
+      console.log(jText.replace("DATE FILLED:",'').trim());
+      startfound=true;
+    }
+    if (!qtyfound && jText.indexOf("QTY") >= 0 && student.Blocks[i].BlockType == "LINE"){
+      console.log("Total Quantity");
+      console.log(jText.replace("QTY:",'').trim());
+      qtyfound=true;
+    }
+    
+
     if(student.Blocks[i].Text == text && student.Blocks[i].BlockType == "LINE"){
-    console.log(text + " Text Found");
     //console.log(student.Blocks[i].Geometry.BoundingBox.Width);
     //console.log(student.Blocks[i].Geometry.BoundingBox.Height);
     //console.log(student.Blocks[i].Geometry.BoundingBox.Left);
@@ -81,6 +115,7 @@ async function getTabDataByTine(student,text) {
     if(text=="MORNING"){
     getTabletName(student,parseFloat(student.Blocks[i].Geometry.BoundingBox.Left),parseFloat(student.Blocks[i].Geometry.BoundingBox.Top),parseFloat(student.Blocks[i].Geometry.BoundingBox.Width),parseFloat(student.Blocks[i].Geometry.BoundingBox.Height));
     }
+    console.log(text + " Dosage Info");
     getTablateCount(student,parseFloat(student.Blocks[i].Geometry.BoundingBox.Left),parseFloat(student.Blocks[i].Geometry.BoundingBox.Top),parseFloat(student.Blocks[i].Geometry.BoundingBox.Width),parseFloat(student.Blocks[i].Geometry.BoundingBox.Height));
   }
     // "Width": 0.07030297070741653,
