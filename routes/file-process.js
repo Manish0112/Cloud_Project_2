@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const AWS = require("aws-sdk");
+
 const multer = require("multer");
 const keys = require("../config/keys");
 const Files= require('../models/files');
@@ -17,9 +18,31 @@ var docfound=new Boolean("false");
  const upload = multer({storage: storage, limits: {fileSize: 10 * 1024 * 1024}}).single('myImage');
 
 router.post('/', (req, res) => {
+  // AWS.config.update({
+  //   accessKeyId: keys.AwsAccessKeyId,
+  //   secretAccessKey: keys.AwsSecretAccessKey
+  // });
+  AWS.config.update ({
+    region: 'us-east-2',
+    //accessKeyId: keys.AWS_ACCESS_KEY_ID,
+    //secretAccessKey: keys.AWS_SECRET_ACCESS_KEY ,
+    endpoint : 'https://textract.us-east-2.amazonaws.com'  
+     });
 
-  var i = "DATE FILLED: 11/21/2121".indexOf("DATE FILLED:");
-console.log(i);
+  AWS.config.getCredentials(function(err) {
+    if (err) console.log(err.stack);
+    // credentials not loaded
+    else {
+      console.log("Access key:", AWS.config.credentials.accessKeyId);
+      console.log("Secret access key:", AWS.config.credentials.secretAccessKey);   
+      console.log("region:", AWS.config.region); 
+      console.log("Endpoint:", AWS.config.endpoint);   
+  
+      //region
+    }
+  });
+//  var i = "DATE FILLED: 11/21/2121".indexOf("DATE FILLED:");
+//console.log(i);
   upload(req, res, (err) => {
     // console.log('User is');
     // console.log(req.user);
@@ -33,52 +56,79 @@ console.log(i);
       const file = req.file;
       //const filepath= path.resolve(file.path);
      // console.log(req.file);
-
+     var params = {
+      Document: { /* required */
+        Bytes: file.buffer
+      }//,
+      // FeatureTypes: [ /* required */
+      //   "FORMS",
+      //   /* more items */
+      // ]
+    };
+    getTextFromImage(params);
       console.log("File Name is : "+req.file.originalname);
       // console.log("File Path is : "+file);
       // console.log(file);
-
-      let student = JSON.parse(file.buffer);
-      console.log('#####################################################');
-      //console.log("Pring JSON");
-      
-      
-var keyArray = Object.keys(student); // key1
-//console.log(keyArray);
-//console.log(student[(keyArray[0])]); // value
-//console.log('#####################################################');
-//console.log("Array length is "+keyArray.length);
-//console.log('#####################################################');
-// for (var i=0; i<data.userContacts.values.length; i++){
-//   console.log(data.userContacts.values[i].nameValuePairs.contactName,
-//               data.userContacts.values[i].nameValuePairs.contactPhone)
-// }
-//console.log("Printing JSON");
-//console.log(student.Blocks[0].Geometry);
-qtyfound=false;
-expiryfound=false;
-startfound=false;
-docfound=false;
-getTabDataByTime(student,"MORNING");
-getTabDataByTime(student,"MIDDAY");
-getTabDataByTime(student,"EVENING");
-getTabDataByTime(student,"BEDTIME");
-
-
-
-
-      console.log('#####################################################');
-      //console.log(student);
-
-       qtyfound=false;
-       expiryfound=false;
-       startfound=false;
-       docfound=false;
-      console.log('This is after the read call');
+      debugger;
+     
     
   });
 });
+async function getTextFromImage(params) {
+ //FeatureTypes
+     //Document
+     console.log("Calling Textract");
+     var textract = new AWS.Textract();
+     //debugger;
 
+    await textract.detectDocumentText(params, function (err, data) {
+       if (err) {
+      console.log(err);
+      } // an error occurred
+       else     //console.log(data);           // successful response
+       {
+        console.log(data);
+       // debugger;     
+        let student = data;
+        console.log('#####################################################');
+        //console.log("Pring JSON");
+        
+   debugger;     
+  var keyArray = Object.keys(student); // key1
+  //console.log(keyArray);
+  //console.log(student[(keyArray[0])]); // value
+  //console.log('#####################################################');
+  //console.log("Array length is "+keyArray.length);
+  //console.log('#####################################################');
+  // for (var i=0; i<data.userContacts.values.length; i++){
+  //   console.log(data.userContacts.values[i].nameValuePairs.contactName,
+  //               data.userContacts.values[i].nameValuePairs.contactPhone)
+  // }
+  //console.log("Printing JSON");
+  //console.log(student.Blocks[0].Geometry);
+  qtyfound=false;
+  expiryfound=false;
+  startfound=false;
+  docfound=false;
+  getTabDataByTime(student,"MORNING");
+  getTabDataByTime(student,"MIDDAY");
+  getTabDataByTime(student,"EVENING");
+  getTabDataByTime(student,"BEDTIME");
+  
+  
+  
+  
+        console.log('#####################################################');
+        //console.log(student);
+  
+         qtyfound=false;
+         expiryfound=false;
+         startfound=false;
+         docfound=false;
+        console.log('This is after the read call');
+       }
+     });
+}
 
 async function getTabDataByTime(student,text) {
  
