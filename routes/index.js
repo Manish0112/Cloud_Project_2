@@ -213,9 +213,22 @@ router.post('/addSchedule', (req,res)=>{
         const dynamoDbObj = require('./../models/connect');
         var myScheduleName = 'mySchedule'+('-')+Date.now();
 
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+        dd = '0' + dd;
+        } 
+        if (mm < 10) {
+        mm = '0' + mm;
+        } 
+        var today = dd + '/' + mm + '/' + yyyy;
+
         var input = {
-            'name': req.user.name,'fileName': myScheduleName, 'startDate': startDate, 'endDate': endDate, 'morningTabCnt': morningCnt,
-            'middayTabCnt': middayCnt, 'eveTabCnt': eveningCnt, 'bedtimeTabCnt': bedtimeCnt , 'tabletName' : tablet, 'patientName':pName
+            'name': req.user.name,'fileName': myScheduleName, 'startDate': startDate, 'endDate': endDate, 'morningTabCnt': morningCnt,'expiryDate':endDate, 'modifiedDate':today,
+            'middayTabCnt': middayCnt, 'eveTabCnt': eveningCnt, 'bedtimeTabCnt': bedtimeCnt , 'tabletName' : tablet, 'patientName':pName, 'docName':docName, 'createdDate':today
         };
 
         var paramsDb = {
