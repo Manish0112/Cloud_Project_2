@@ -153,4 +153,87 @@ router.get('/listUsers',ensureAuthenticated,(req,res)=>{
     })
 });
 
+//schedules
+router.get('/schedule',ensureAuthenticated,(req,res)=>{
+
+    const currentuser =req.user;
+    const email = req.user.email;
+    
+    Files.find({ email : req.user.email },(err, data) => {
+        
+        res.render('schedule',{
+            
+            user: currentuser,
+            data: data,
+            logins: {}
+        })
+    })
+});
+
+//addSchedule
+router.get('/addSchedule',ensureAuthenticated,(req,res)=>{
+
+    const currentuser =req.user;
+    const email = req.user.email;
+    
+    Files.find({ email : req.user.email },(err, data) => {
+        
+        res.render('addschedule',{
+            
+            user: currentuser,
+            data: data,
+            logins: {}
+        })
+    })
+});
+
+//add shedule manually
+router.post('/addSchedule', (req,res)=>{
+
+    const { name, tablet, startDate, endDate, morningCnt, middayCnt, eveningCnt, bedtimeCnt, docName} = req.body;
+
+    let errors = [];
+
+    if(!name || !tablet || !startDate ||!endDate || !docName){
+        errors.push({ msg:'Please fill all required fields!' });
+    }
+    
+    if(errors.length > 0){
+        res.render('addSchedule',{
+            user: req.user,
+            errors,
+            tablet,
+            startDate,
+            endDate,
+            docName
+        });
+    }
+    else{
+
+        const dynamoDbObj = require('./../models/connect');
+        var myScheduleName = 'mySchedule'+('-')+Date.now();
+
+        var input = {
+            'fileName': myScheduleName, 'startDate': startDate, 'endDate': endDate, 'morningTabCnt': morningCnt,
+            'middayTabCnt': middayCnt, 'eveTabCnt': eveningCnt, 'bedtimeTabCnt': bedtimeCnt , 'tabletName' : tablet
+        };
+
+        var paramsDb = {
+            TableName: "files",
+            Item:  input
+        };
+
+        dynamoDbObj.put(paramsDb, function (err, data) {
+                    
+            if (err) {
+                console.log(err);
+            } else {
+                console.log('Schedule Added');
+            }
+        });
+        req.flash('success_msg','Schedule Created!');
+        res.redirect('/addSchedule');
+    }
+});
+
 module.exports=router;
