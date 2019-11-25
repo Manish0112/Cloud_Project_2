@@ -180,8 +180,8 @@ async function getTextFromImage(params,file) {
          docfound=false;
         
          //dynamoDb
-         var eDate = Date.parse(startDate,'MM/DD/YYYY');
-         eDate.setDate(eDate.getDate() + parseInt(qty));
+         var eDate = (Date.parse(startDate,'MM/DD/YYYY')+ parseInt(qty));
+         
             var pdata = {
               'docName': docName, 'tabletName': tabletName, 'morningTabCnt': morningTabCnt, 'middayTabCnt': middayTabCnt, 
               'eveTabCnt': eveTabCnt, 'bedtimeTabCnt': bedtimeTabCnt, 'fileDesc': file.originalname, 'fileName': file.originalname,
