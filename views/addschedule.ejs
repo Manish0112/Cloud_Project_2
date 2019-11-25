@@ -39,7 +39,7 @@
                         <i class="far fa-calendar-plus"></i>
                 </h1>
                 <% include ./partials/messages %>
-                <form action="/addSchedule" method="POST">
+                <form action="/schedule/add" method="POST">
                     <input type="hidden" name=user value=<%=user.name %>>
                     <table>
                     <tr>
