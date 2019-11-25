@@ -190,11 +190,11 @@ router.get('/addSchedule',ensureAuthenticated,(req,res)=>{
 //add shedule manually
 router.post('/addSchedule', (req,res)=>{
 
-    const { name, tablet, startDate, endDate, morningCnt, middayCnt, eveningCnt, bedtimeCnt, docName} = req.body;
+    const { pName, tablet, startDate, endDate, morningCnt, middayCnt, eveningCnt, bedtimeCnt, docName} = req.body;
 
     let errors = [];
 
-    if(!name || !tablet || !startDate ||!endDate || !docName){
+    if(!pName || !tablet || !startDate ||!endDate || !docName){
         errors.push({ msg:'Please fill all required fields!' });
     }
     
@@ -214,8 +214,8 @@ router.post('/addSchedule', (req,res)=>{
         var myScheduleName = 'mySchedule'+('-')+Date.now();
 
         var input = {
-            'fileName': myScheduleName, 'startDate': startDate, 'endDate': endDate, 'morningTabCnt': morningCnt,
-            'middayTabCnt': middayCnt, 'eveTabCnt': eveningCnt, 'bedtimeTabCnt': bedtimeCnt , 'tabletName' : tablet
+            'name': req.user.name,'fileName': myScheduleName, 'startDate': startDate, 'endDate': endDate, 'morningTabCnt': morningCnt,
+            'middayTabCnt': middayCnt, 'eveTabCnt': eveningCnt, 'bedtimeTabCnt': bedtimeCnt , 'tabletName' : tablet, 'patientName':pName
         };
 
         var paramsDb = {

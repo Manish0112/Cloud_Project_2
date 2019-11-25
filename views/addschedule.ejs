@@ -1,156 +1,163 @@
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var elems = document.querySelectorAll('.datepicker');
-        var instances = M.Datepicker.init(elems, options);
-        });
-    
-        // Or with jQuery
-    
-        $(document).ready(function(){
-        $('.datepicker').datepicker();
-        });
-</script>
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="#">Add Schedule</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarColor02">
-        <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-            <a class="nav-link" href="#">Welcome <%=user.name %> <span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/dashboard">Dashboard</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/schedule">Schedules</a>
-        </li>
-        </ul>
-        <span class="navbar-text">
-        <a href="/users/logout" >Logout</a>
-        </span>
-    </div>
-</nav>
-
-<div class="row mt-5">
-<div class="col-md-6 m-auto">
-    <div class="card card-body">
-    <h1 class="text-center mb-3">
-            <i class="far fa-calendar-plus"></i>
-    </h1>
-    <% include ./partials/messages %>
-    <form action="/addSchedule" method="POST">
-        <input type="hidden" name=user value=<%=user.name %>>
-        <table>
-        <tr>
-            <td colspan="2">
-            <div class="form-group">
-                <label for="name">Patient Name</label>
-                <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    class="form-control"
-                    placeholder="Enter Patient Name"
-                    value="<%= typeof name != 'undefined' ? name : '' %>"
-                />
-            </div>
-        </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-            <div class="form-group">
-                <label for="tablet">Tablet Name</label>
-                <input
-                    type="text"
-                    id="tablet"
-                    name="tablet"
-                    class="form-control"
-                    placeholder="Enter tablet Name"
-                    value="<%= typeof tablet != 'undefined' ? tablet : '' %>"
-                />
-            </div>
-            </td>            
-        </tr>
-        <tr>
-            <td><div class="form-group">
-                <label for="startDate">Start Date</label>
-                <input type="text" class="datepicker" placeholder="Start Date">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+                <a class="navbar-brand" href="#">Add Schedule</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            
+                <div class="collapse navbar-collapse" id="navbarColor02">
+                    <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Welcome <%=user.name %> <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/schedule">Schedules</a>
+                    </li>
+                    </ul>
+                    <span class="navbar-text">
+                    <a href="/users/logout" >Logout</a>
+                    </span>
                 </div>
-            </td>
-            <td>
-                <div class="form-group">
-                    <label for="endDate">End Date</label>
-                    <input type="text" class="datepicker" placeholder="End Date">
+            </nav>
+            
+            <div class="row mt-5">
+            <div class="col-md-6 m-auto">
+                <div class="card card-body">
+                <h1 class="text-center mb-3">
+                        <i class="far fa-calendar-plus"></i>
+                </h1>
+                <% include ./partials/messages %>
+                <form action="/addSchedule" method="POST">
+                    <input type="hidden" name=user value=<%=user.name %>>
+                    <table>
+                    <tr>
+                        <td colspan="2">
+                        <div class="input-field">
+                            <label for="pName">Patient Name</label>
+                            <input
+                                type="text"
+                                id="pName"
+                                name="pName"
+                                class="form-control"
+                                value="<%= typeof pName != 'undefined' ? pName : '' %>"
+                            />
+                        </div>
+                    </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                        <div class="input-field">
+                            <label for="tablet">Tablet Name</label>
+                            <input
+                                type="text"
+                                id="tablet"
+                                name="tablet"
+                                class="form-control"
+                                value="<%= typeof tablet != 'undefined' ? tablet : '' %>"
+                            />
+                        </div>
+                        </td>            
+                    </tr>
+                    <tr>
+                        <td><div class="input-field">
+                            <label for="startDate">Start Date</label>
+                            <input type="text" id="startDate" class="datepicker">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-field">
+                                <input type="text" id="endDate" class="datepicker">
+                                <label for="endDate">End Date</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="input-field">
+                            <label for="morningCnt">Morning tablet count</label>
+                            <input
+                                type="text"
+                                id="morningCnt"
+                                name="morningCnt"
+                                class="form-control"
+                            /> 
+                        </td>
+                        </div>
+                        <td>
+                            <div class="input-field">
+                            <label for="middayCnt">Midday tablet count</label>
+                            <input
+                                type="text"
+                                id="middayCnt"
+                                name="middayCnt"
+                                class="form-control"
+                            /> 
+                            </div>
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="input-field">                
+                            <label for="eveningCnt">Evening tablet count</label>
+                            <input
+                                type="text"
+                                id="eveningCnt"
+                                name="eveningCnt"
+                                class="form-control"
+                            /> 
+                            </div>
+                        </td>
+                        <td>
+                            <div class="input-field">                
+                            <label for="bedtimeCnt">Bedtime tablet count</label>
+                            <input
+                                type="text"
+                                id="bedtimeCnt"
+                                name="bedtimeCnt"
+                                class="form-control"
+                            /> 
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                        <div class="input-field">
+                            <label for="docName">Docter Name</label>
+                            <input
+                                type="text"
+                                id="docName"
+                                name="docName"
+                                class="form-control"
+                                value="<%= typeof docName != 'undefined' ? docName : '' %>"
+                            />
+                        </div>
+                    </td>
+                    </tr>
+                </table>
+                <button type="submit" class="btn btn-primary btn-block">
+                Add Schedule
+                </button>
+                </form>
                 </div>
-            </td>
-        </tr>
-        <tr>
-            <div class="form-group">
-            <td><label for="morningCnt">Morning tablet count</label>
-                <input
-                    type="text"
-                    id="morningCnt"
-                    name="morningCnt"
-                    class="form-control"
-                    placeholder="Morning tablet"
-                /> 
-            </td>
-            <td><label for="middayCnt">Midday tablet count</label>
-                <input
-                    type="text"
-                    id="middayCnt"
-                    name="middayCnt"
-                    class="form-control"
-                    placeholder="Midday tablet"
-                /> 
-            </td>
             </div>
-        </tr>
-        <tr>
-            <div class="form-group">
-            <td><label for="eveningCnt">Evening tablet count</label>
-                <input
-                    type="text"
-                    id="eveningCnt"
-                    name="eveningCnt"
-                    class="form-control"
-                    placeholder="Evening tablet"
-                /> 
-            </td>
-            <td><label for="bedtimeCnt">Bedtime tablet count</label>
-                <input
-                    type="text"
-                    id="bedtimeCnt"
-                    name="bedtimeCnt"
-                    class="form-control"
-                    placeholder="Bedtime tablet"
-                /> 
-            </td>
-            </div>
-        </tr>
-        <tr>
-            <td colspan="2">
-            <div class="form-group">
-                <label for="docName">Docter Name</label>
-                <input
-                    type="text"
-                    id="docName"
-                    name="docName"
-                    class="form-control"
-                    placeholder="Enter Docter Name"
-                    value="<%= typeof docName != 'undefined' ? docName : '' %>"
-                />
-            </div>
-        </td>
-        </tr>
-    </table>
-    <button type="submit" class="btn btn-primary btn-block">
-    Add Schedule
-    </button>
-    </form>
+        </div>
     </div>
-</div>
-</div>
+    <script>
+        const Calender=document.querySelector('.datepicker');
+        M.Datepicker.init(Calender,{});        
+    </script>
+</body>
+</html>
