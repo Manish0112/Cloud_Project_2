@@ -34,10 +34,25 @@
             <tr>
             <th scope="col">Schedule Name</th>
             <th scope="col">Patient Name</th>
-            <th scope="col">Upload Time</th>
-            <th scope="col">Download</th>
+            <th scope="col">Tablet Name</th>
+            <th scope="col">Start Date</th>
+            <th scope="col">End Date</th>
+            <th scope="col">Edit</th>
             <th scope="col">Delete</th>
             </tr>
         </thead>
+        <tbody>
+            <% data.forEach(function (data) { %>
+                <tr class="table-secondary">
+                    <td><%= data.fileName %></td>
+                    <td><%= data.patientName %></td>
+                    <td><%= data.tabletName %></td>
+                    <td><%= data.startDate %></td>
+                    <td><%= data.endDate %></td>
+                    <td><a href="#"><i class="fas fa-edit"></i></a></td>
+                    <td><a href="#"><i class="fas fa-trash"></i></a></td>
+                </tr>
+            <% }) %>
+        </tbody>
     </table>
 </div>

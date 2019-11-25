@@ -161,11 +161,32 @@ router.get('/schedule',ensureAuthenticated,(req,res)=>{
     
     Files.find({ email : req.user.email },(err, data) => {
         
-        res.render('schedule',{
+        //get schedule from dynamodb
+        var params = {
+        TableName: 'files',
+        FilterExpression: "#sn = :i",
+        ExpressionAttributeNames:{
+            "#sn": "name"
+        },
+        ExpressionAttributeValues : {
+            // ':i'  : 'mySchedule-1574717348492'
+            ':i'  : 'admin'
+        }
+        };
+
+        
+        dynamoDbObj.scan(params, function (err, filedata) {
             
-            user: currentuser,
-            data: data,
-            logins: {}
+            if (err){ throw err}
+            else{
+                
+                res.render('schedule',{
+            
+                    user: currentuser,
+                    data: filedata.Items,
+                    logins: {}
+                })
+            }
         })
     })
 });
@@ -232,7 +253,7 @@ router.post('/addSchedule', (req,res)=>{
         };
 
         var paramsDb = {
-            TableName: "files",
+            TableName: 'files',
             Item:  input
         };
 
@@ -240,12 +261,14 @@ router.post('/addSchedule', (req,res)=>{
                     
             if (err) {
                 console.log(err);
+                req.flash('error_msg','Error Occured while creating schedule!');
+                res.redirect('/addSchedule');
             } else {
                 console.log('Schedule Added');
+                req.flash('success_msg','Schedule Created!');
+                res.redirect('/addSchedule');
             }
         });
-        req.flash('success_msg','Schedule Created!');
-        res.redirect('/addSchedule');
     }
 });
 
