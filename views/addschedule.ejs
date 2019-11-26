@@ -9,7 +9,7 @@
 <body>
     <div>
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-                <a class="navbar-brand" href="#">Add Schedule</a>
+                <a class="navbar-brand" href="#">Add/Edit Schedule</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -23,7 +23,7 @@
                         <a class="nav-link" href="/dashboard">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/schedule">Schedules</a>
+                        <a class="nav-link" href="/schedule/view">Schedules</a>
                     </li>
                     </ul>
                     <span class="navbar-text">
@@ -45,19 +45,31 @@
                     <tr>
                         <td colspan="2">
                         <div class="input-field">
-                            <label for="pName">Patient Name</label>
+                            <label for="sName">Schedule Name</label>
                             <input
                                 type="text"
-                                id="pName"
-                                name="pName"
+                                id="sName"
+                                name="sName"
                                 class="form-control"
-                                value="<%= typeof pName != 'undefined' ? pName : '' %>"
+                                value="<%= data != 'undefined' ? (data.fileName != 'undefined' ? data.fileName : '') : ''  %>"
                             />
                         </div>
                     </td>
                     </tr>
                     <tr>
-                        <td colspan="2">
+                        <td>
+                            <div class="input-field">
+                                <label for="pName">Patient Name</label>
+                                <input
+                                    type="text"
+                                    id="pName"
+                                    name="pName"
+                                    class="form-control"
+                                    value="<%= data != 'undefined' ? (data.patientName != 'undefined' ? data.patientName : '') : ''  %>"
+                                />
+                            </div>
+                        </td>
+                        <td>
                         <div class="input-field">
                             <label for="tablet">Tablet Name</label>
                             <input
@@ -65,20 +77,22 @@
                                 id="tablet"
                                 name="tablet"
                                 class="form-control"
-                                value="<%= typeof tablet != 'undefined' ? tablet : '' %>"
+                                value="<%= data != 'undefined' ? (data.tabletName != 'undefined' ? data.tabletName : '') : ''  %>"
                             />
                         </div>
                         </td>            
                     </tr>
                     <tr>
                         <td><div class="input-field">
-                            <input type="date" id="startDate" name="startDate" class="datepicker">
+                            <input type="date" id="startDate" name="startDate" class="datepicker" 
+                            value="<%= data != 'undefined' ? (data.startDate != 'undefined' ? data.startDate : '') : ''  %>" />
                             <label for="startDate">Start Date</label>
                             </div>
                         </td>
                         <td>
                             <div class="input-field">
-                                <input type="date" id="endDate" name="endDate" class="datepicker">
+                                <input type="date" id="endDate" name="endDate" class="datepicker"
+                                value="<%= data != 'undefined' ? (data.endDate != 'undefined' ? data.endDate : '') : ''  %>" />
                                 <label for="endDate">End Date</label>
                             </div>
                         </td>
@@ -92,6 +106,7 @@
                                 id="morningCnt"
                                 name="morningCnt"
                                 class="form-control"
+                                value="<%= data != 'undefined' ? (data.morningTabCnt != 'undefined' ? data.morningTabCnt : '') : ''  %>"
                             /> 
                         </td>
                         </div>
@@ -103,6 +118,7 @@
                                 id="middayCnt"
                                 name="middayCnt"
                                 class="form-control"
+                                value="<%= data != 'undefined' ? (data.middayTabCnt != 'undefined' ? data.middayTabCnt : '') : ''  %>"
                             /> 
                             </div>
                         </td>
@@ -117,6 +133,7 @@
                                 id="eveningCnt"
                                 name="eveningCnt"
                                 class="form-control"
+                                value="<%= data != 'undefined' ? (data.eveTabCnt != 'undefined' ? data.eveTabCnt : '') : ''  %>"
                             /> 
                             </div>
                         </td>
@@ -128,6 +145,7 @@
                                 id="bedtimeCnt"
                                 name="bedtimeCnt"
                                 class="form-control"
+                                value="<%= data != 'undefined' ? (data.bedtimeTabCnt != 'undefined' ? data.bedtimeTabCnt : '') : ''  %>"
                             /> 
                             </div>
                         </td>
@@ -141,15 +159,29 @@
                                 id="docName"
                                 name="docName"
                                 class="form-control"
-                                value="<%= typeof docName != 'undefined' ? docName : '' %>"
+                                value="<%=  data != 'undefined' ?  (data.docName != 'undefined' ? data.docName : '') : '' %>"
                             />
                         </div>
                     </td>
                     </tr>
                 </table>
-                <button type="submit" class="btn btn-primary btn-block">
-                Add Schedule
-                </button>
+                <%if (!editFlag) { %>
+                    <button type="submit" class="btn btn-primary btn-block">
+                        Add Schedule
+                    </button>
+                <% }else{ %>
+                    <table>
+                        <tr>
+                            <td>
+                                <button type="submit" name="confirmBtn" value="confirm" class="btn btn-primary btn-block">confirm</button>
+                            </td>
+                            <td>
+                                <button type="submit" name="deleteBtn" value="delete" class="btn btn-primary btn-block">Delete</button>
+                            </td>
+                        </tr>
+                    </table>
+
+                <% } %>
                 </form>
                 </div>
             </div>

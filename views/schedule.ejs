@@ -34,25 +34,32 @@
         <thead>
             <tr>
             <th scope="col">Schedule Name</th>
+            <th scope="col">Schedule Description</th>
             <th scope="col">Patient Name</th>
             <th scope="col">Tablet Name</th>
             <th scope="col">Start Date</th>
             <th scope="col">End Date</th>
             <th scope="col">Edit</th>
-            <th scope="col">Delete</th>
+            <th scope="col">Activate</th>
             </tr>
         </thead>
         <tbody>
             <% data.forEach(function (data) { %>
+                <form action="/schedule/edit" method="POST">
                 <tr class="table-secondary">
                     <td><%= data.fileName %></td>
+                    <td><%= data.fileDesc %></td>
                     <td><%= data.patientName %></td>
                     <td><%= data.tabletName %></td>
                     <td><%= data.startDate %></td>
                     <td><%= data.endDate %></td>
-                    <td><a href="#"><i class="fas fa-edit"></i></a></td>
-                    <td><a href="#"><i class="fas fa-trash"></i></a></td>
+                    <input type='hidden' id='user' name='user' value='<%= data.user %>'>
+                    <input type='hidden' id='fileName' name='fileName' value='<%= data.fileName %>'>
+                    <input type='hidden' id='editFlag' name='editFlag' value='true'>
+                    <td><button type="submit" name="editBtn" value="edit" class="btn btn-secondary">Edit</button></td>
+                    <td><button type="submit" name="activateBtn" value="activate" class="btn btn-secondary">Activate</button></td>
                 </tr>
+                </form>
             <% }) %>
         </tbody>
     </table>
