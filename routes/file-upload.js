@@ -12,6 +12,8 @@ const moment = require('moment');
  var expiryfound=new Boolean("false");
  var startfound=new Boolean("false");
  var docfound=new Boolean("false");
+ var refillbyfound=new Boolean("false");
+
 
 var qty=0;
 var expiryDate=new String("");
@@ -19,16 +21,25 @@ var startDate=new String("");
 var docName=new String("");
 var tabletName=new String("");
 var patientFullName=new String("");
+var refillByDate=new String("");
+
 var morningTabCnt=0;
 var middayTabCnt=0;
 var eveTabCnt=0;
 var bedtimeTabCnt=0;
+var refillQuota=0;
+
 
 
 
 router.post('/', async (req, res) => {
-
-  upload(req, res, (err) => {
+  
+  //console.log(str.indexOf('REFIILS:'));
+  //console.log(str.indexOf('By'));
+  //console.log(str.substr(str.indexOf('REFIILS:')+8,(str.indexOf('By'))-8).trim());
+  //console.log(str.substr(str.indexOf('By')+2));
+  
+      upload(req, res, (err) => {
      //File Upload started
     var startDate = new Date();
     var input={};
@@ -151,6 +162,7 @@ async function getTextFromImage(params,input) {
         expiryfound=false;
         startfound=false;
         docfound=false;
+        refillbyfound=false;
         getTabDataByTime(student,"MORNING");
         getTabDataByTime(student,"MIDDAY");
         getTabDataByTime(student,"EVENING");
@@ -160,6 +172,7 @@ async function getTextFromImage(params,input) {
          expiryfound=false;
          startfound=false;
          docfound=false;
+         refillbyfound=false;
         
          //dynamoDb
          var eDate = moment(startDate).add(parseInt(qty), 'days');
@@ -169,7 +182,7 @@ async function getTextFromImage(params,input) {
               'email': input.email, 'createdDate': moment(input.createdDate).format("YYYY-MM-DD HH:MM:SS"), 'fileDesc': input.fileDesc, 'fileName': input.fileName,
               'fileUrl': input.fileUrl, 'modifiedDate': moment(Date.now()).format("YYYY-MM-DD HH:MM:SS"), 'name': input.name , 'uploadTime' : input.uploadTime,
               'docName': docName, 'tabletName': tabletName, 'morningTabCnt': morningTabCnt, 'middayTabCnt': middayTabCnt, 
-              'eveTabCnt': eveTabCnt, 'bedtimeTabCnt': bedtimeTabCnt,'patientName':patientFullName,
+              'eveTabCnt': eveTabCnt, 'bedtimeTabCnt': bedtimeTabCnt,'patientName':patientFullName,'refillByDate':moment(refillByDate).format("YYYY-MM-DD"),'refillQuota':refillQuota,
               'startDate': moment(startDate).format("YYYY-MM-DD"),'endDate': moment(eDate).format("YYYY-MM-DD"), 'expiryDate': moment(expiryDate).format("YYYY-MM-DD")
             };
             
@@ -261,7 +274,15 @@ async function getTabDataByTime(student,text) {
       qty=jText.replace("QTY:",'').trim();
       qtyfound=true;
     }
-    
+
+    if (!refillbyfound && jText.indexOf("REFILLS")>= 0 && student.Blocks[i].BlockType == "LINE"){
+      
+      refillByDate=jText.substr(jText.toLowerCase().indexOf('by')+2).trim();
+      console.log(jText);
+      console.log(refillByDate);
+      refillQuota=jText.substr(jText.indexOf('REFILLS:')+8,(jText.toLowerCase().indexOf('by'))-8).trim();
+      refillbyfound=true;
+    }
 
     if(student.Blocks[i].Text == text && student.Blocks[i].BlockType == "LINE"){
     //console.log(student.Blocks[i].Geometry.BoundingBox.Width);
