@@ -3,6 +3,7 @@ const router = express.Router();
 const AWS = require("aws-sdk");
 const multer = require("multer");
 const keys = require("../config/keys");
+const moment = require('moment');    
 // const Files= require('./../models/files');
 
  const storage = multer.memoryStorage();
@@ -24,20 +25,18 @@ var bedtimeTabCnt=0;
 
 
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
 
   upload(req, res, (err) => {
-    
-    const moment = require('moment');    
-    //File Upload started
+     //File Upload started
     var startDate = new Date();
-  
+    var input={};
     //get user details 
-//      const email = req.user.email;
-//      const name = req.user.name;
+     const email = req.user.email;
+      const name = req.user.name;
        //get user details 
-       const email = "pankajhpatil21@gmail.com";
-       const name = "admin";
+//       const email = "pankajhpatil21@gmail.com";
+//       const name = "admin";
  
   
       const file = req.file;
@@ -79,7 +78,7 @@ router.post('/', (req, res) => {
             //res.status(500).json({error: true, Message: err});
         } else {
             //success
-            req.flash('success_msg','File Uploaded!');
+            req.flash('success_msg','File '+myFileName +' Uploaded!');
             res.redirect('/dashboard');
 
             //updating in dyanamodb
@@ -88,7 +87,7 @@ router.post('/', (req, res) => {
 
             //dynamoDb
             
-            var input = {
+             input = {
               'email': email, 'createdDate': Date.now(), 'fileDesc': file.originalname, 'fileName': myFileName,
               'fileUrl': data.Location, 'modifiedDate': Date.now(), 'name': name , 'uploadTime' : ((endDate - startDate) / 1000)
             };
@@ -96,67 +95,49 @@ router.post('/', (req, res) => {
 
             const dynamoDbObj = require('./../models/connect');
 
-            var paramsDb = {
-                TableName: "files",
-                Item:  input
-            };
+            // var paramsDb = {
+            //     TableName: "files",
+            //     Item:  input
+            // };
 
-            dynamoDbObj.put(paramsDb, function (err, data) {
+            // dynamoDbObj.put(paramsDb, function (err, data) {
                 
-                if (err) {
-                    console.log(err);
-                } else {
-                    console.log('File uploaded');
-                }
-            });
-
-            //mongo
-            // const newFile = new Files({
-            //   user : name,
-            //   email : email,
-            //   fileUrl:data.Location,
-            //   fileName: myFileName,
-            //   fileDesc: file.originalname,
-            //   uploadTime: ((endDate - startDate) / 1000),
-            //   modifiedDate: ((endDate - startDate) / 1000)
+            //     if (err) {
+            //         console.log(err);
+            //     } else {
+            //         console.log('File uploaded');
+            //     }
             // });
-            // //check if already exisits
-            // Files.findOne({ fileName:file.originalname })
-            // .then( (fileName) => {
-
-            //     newFile.save()
-            //     .then(file => {
-            //       console.log('File Uploaded');
-            //   })
-            //   .catch(err=>console.log(err));
-            // });
+            AWS.config.update ({
+              region: 'us-east-2',
+              //accessKeyId: keys.AWS_ACCESS_KEY_ID,
+              //secretAccessKey: keys.AWS_SECRET_ACCESS_KEY ,
+              endpoint : 'https://textract.us-east-2.amazonaws.com'  
+               });
+          //Params for textract 
+           var params = {
+            Document: {
+              Bytes: file.buffer
+            }
+          };
+          //Text processing'
+          console.log('printing input');
+          getTextFromImage(params,input);
+          debugger;   
+  
 
         }
       });
       }
-      AWS.config.update ({
-        region: 'us-east-2',
-        //accessKeyId: keys.AWS_ACCESS_KEY_ID,
-        //secretAccessKey: keys.AWS_SECRET_ACCESS_KEY ,
-        endpoint : 'https://textract.us-east-2.amazonaws.com'  
-         });
-    //Params for textract 
-     var params = {
-      Document: {
-        Bytes: file.buffer
-      }
-    };
-    //Text processing
-    getTextFromImage(params,file);
-    debugger;   
+ 
     
   });
 });
 //Calling textract to extract text from images
-async function getTextFromImage(params,file) {
+async function getTextFromImage(params,input) {
 
      var textract = new AWS.Textract();
-    await textract.detectDocumentText(params, function (err, data) {
+   let data= await textract.detectDocumentText(params, function (err, data) {
        if (err) {
       console.log(err);
       }else{
@@ -180,33 +161,71 @@ async function getTextFromImage(params,file) {
          docfound=false;
         
          //dynamoDb
-         var eDate = (Date.parse(startDate,'MM/DD/YYYY')+ parseInt(qty));
-         
+         var eDate = moment(startDate).add(parseInt(qty), 'days');
+
+
             var pdata = {
+              'email': input.email, 'createdDate': moment(input.createdDate).format("YYYY-MM-DD HH:MM:SS"), 'fileDesc': input.fileDesc, 'fileName': input.fileName,
+              'fileUrl': input.fileUrl, 'modifiedDate': moment(Date.now()).format("YYYY-MM-DD HH:MM:SS"), 'name': input.name , 'uploadTime' : input.uploadTime,
               'docName': docName, 'tabletName': tabletName, 'morningTabCnt': morningTabCnt, 'middayTabCnt': middayTabCnt, 
-              'eveTabCnt': eveTabCnt, 'bedtimeTabCnt': bedtimeTabCnt, 'fileDesc': file.originalname, 'fileName': file.originalname,
-              'startDate': Date.parse(startDate,'MM/DD/YYYY'),'endDate': eDate, 'expiryDate': Date.parse(expiryDate,'MM/DD/YYYY'),'modifiedDate': Date.now()
+              'eveTabCnt': eveTabCnt, 'bedtimeTabCnt': bedtimeTabCnt,
+              'startDate': moment(startDate).format("YYYY-MM-DD"),'endDate': moment(eDate).format("YYYY-MM-DD"), 'expiryDate': moment(expiryDate).format("YYYY-MM-DD")
             };
             
             
 
             const dynamoDbObj = require('./../models/connect');
-
             var paramsDb = {
-                TableName: "files",
-                Item:  pdata
-            };
+              TableName: "files",
+              Item: pdata
+          };
 
-            dynamoDbObj.put(paramsDb, function (err, data) {
+            // myFileName='myPrescription-1575782089973';
+            // var paramsDb = {
+            //     TableName: "files",
+            //     Key: {
+            //       'fileName': myFileName
+            //   },
+            //     UpdateExpression: "set docName=:docName,tabletName=:tabletName,morningTabCnt=:morningTabCnt,middayTabCnt=:middayTabCnt,eveTabCnt=:eveTabCnt,bedtimeTabCnt=:bedtimeTabCnt,startDate=:startDate,endDate=:endDate,expiryDate=:expiryDate",
+            //     ExpressionAttributeValues: {
+            //               ":docName": docName,
+            //               ":tabletName": tabletName,
+            //               ":morningTabCnt":morningTabCnt ,
+            //               ":middayTabCnt": middayTabCnt,
+            //               ":middayTabCnt": middayTabCnt,
+            //               ":eveTabCnt": eveTabCnt,
+            //               ":bedtimeTabCnt": bedtimeTabCnt,
+            //               ":startDate": moment(startDate).format("YYYY-MM-DD"),
+            //               ":endDate": moment(eDate).format("YYYY-MM-DD"),
+            //               ":endDate": moment(eDate).format("YYYY-MM-DD"),
+            //               ":expiryDate": moment(expiryDate).format("YYYY-MM-DD")
+            //          }
+            // };
+
+              // const params = {
+              //     TableName: "MYTABLE",
+              //     Key: {
+              //         "id": "1"
+              //     },
+              //     UpdateExpression: "set variable1 = :x, #MyVariable = :y",
+              //     ExpressionAttributeNames: {
+              //         "#MyVariable": "variable23"
+              //     },
+              //     ExpressionAttributeValues: {
+              //         ":x": "hello2",
+              //         ":y": "dog"
+              //     }
+              //   };
+              console.log(paramsDb);
+              let key =  dynamoDbObj.put(paramsDb, function (err, data) {
                 
                 if (err) {
                     console.log(err);
                 } else {
-                    console.log('Schedule data updated');
+                    console.log(data);
                 }
             });
       //  console.log('This is after the read call');
-      console.log(pdata);
        }
      });
 }
