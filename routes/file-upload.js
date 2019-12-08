@@ -4,7 +4,7 @@ const AWS = require("aws-sdk");
 const multer = require("multer");
 const keys = require("../config/keys");
 const Files= require('./../models/files');
-const moment = require('moment');    
+
  const storage = multer.memoryStorage();
  const upload = multer({storage: storage, limits: {fileSize: 10 * 1024 * 1024}}).single('myPrescription');
  var qtyfound=new Boolean("false");
@@ -28,6 +28,7 @@ router.post('/', (req, res) => {
 
   upload(req, res, (err) => {
     
+    const moment = require('moment');    
     //File Upload started
     var startDate = new Date();
   
@@ -153,6 +154,7 @@ router.post('/', (req, res) => {
 });
 //Calling textract to extract text from images
 async function getTextFromImage(params,file) {
+
      var textract = new AWS.Textract();
     await textract.detectDocumentText(params, function (err, data) {
        if (err) {
@@ -183,7 +185,7 @@ async function getTextFromImage(params,file) {
             var pdata = {
               'docName': docName, 'tabletName': tabletName, 'morningTabCnt': morningTabCnt, 'middayTabCnt': middayTabCnt, 
               'eveTabCnt': eveTabCnt, 'bedtimeTabCnt': bedtimeTabCnt, 'fileDesc': file.originalname, 'fileName': file.originalname,
-              'startDate': moment(Date.parse(startDate,'MM/DD/YYYY'), "YYYY-MM-DD"),'endDate': moment(eDate, "YYYY-MM-DD"), 'expiryDate': moment(Date.parse(expiryDate,'MM/DD/YYYY'), "YYYY-MM-DD"),'modifiedDate': Date.now()
+              'startDate': Date.parse(startDate,'MM/DD/YYYY'),'endDate': eDate, 'expiryDate': Date.parse(expiryDate,'MM/DD/YYYY'),'modifiedDate': Date.now()
             };
             
             
@@ -195,7 +197,7 @@ async function getTextFromImage(params,file) {
                 Item:  pdata
             };
 
-            dynamoDbObj.updateItem(paramsDb, function (err, data) {
+            dynamoDbObj.put(paramsDb, function (err, data) {
                 
                 if (err) {
                     console.log(err);
