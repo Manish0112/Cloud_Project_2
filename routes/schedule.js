@@ -53,16 +53,42 @@ router.get('/add',ensureAuthenticated,(req,res)=>{
     const currentuser =req.user;
     const email = req.user.email;
     
-    Files.find({ email : req.user.email },(err, data) => {
+    // Files.find({ email : req.user.email },(err, data) => {
         
-        res.render('addschedule',{
+    //     res.render('addschedule',{
             
-            user: currentuser,
-            data: data,
-            editFlag:false,
-            logins: {}
+    //         user: currentuser,
+    //         data: data,
+    //         editFlag:false,
+    //         logins: {}
+    //     })
+    // })
+    var params = {
+        TableName: 'files',
+        FilterExpression: "#sn <> :i",
+        ExpressionAttributeNames:{
+            "#sn": "email"
+        },
+        ExpressionAttributeValues : {
+            ':i'  : email
+        }
+        };
+
+        
+        dynamoDbObj.scan(params, function (err, filedata) {
+            
+            if (err){ throw err}
+            else{
+                
+                res.render('addschedule',{
+            
+                    user: currentuser,
+                    data: filedata,
+                    editFlag:false,
+                    logins: {}
+                })
+            }
         })
-    })
 });
 
 router.post('/add', (req,res)=>{
