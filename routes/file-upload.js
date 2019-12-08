@@ -18,6 +18,7 @@ var expiryDate=new String("");
 var startDate=new String("");
 var docName=new String("");
 var tabletName=new String("");
+var patientFullName=new String("");
 var morningTabCnt=0;
 var middayTabCnt=0;
 var eveTabCnt=0;
@@ -168,7 +169,7 @@ async function getTextFromImage(params,input) {
               'email': input.email, 'createdDate': moment(input.createdDate).format("YYYY-MM-DD HH:MM:SS"), 'fileDesc': input.fileDesc, 'fileName': input.fileName,
               'fileUrl': input.fileUrl, 'modifiedDate': moment(Date.now()).format("YYYY-MM-DD HH:MM:SS"), 'name': input.name , 'uploadTime' : input.uploadTime,
               'docName': docName, 'tabletName': tabletName, 'morningTabCnt': morningTabCnt, 'middayTabCnt': middayTabCnt, 
-              'eveTabCnt': eveTabCnt, 'bedtimeTabCnt': bedtimeTabCnt,
+              'eveTabCnt': eveTabCnt, 'bedtimeTabCnt': bedtimeTabCnt,'patientName':patientFullName,
               'startDate': moment(startDate).format("YYYY-MM-DD"),'endDate': moment(eDate).format("YYYY-MM-DD"), 'expiryDate': moment(expiryDate).format("YYYY-MM-DD")
             };
             
@@ -283,10 +284,12 @@ async function getTabDataByTime(student,text) {
 async function getTabletName(in1,x,y,w,h) {
   //console.log("Calling abc"+in1+" input 2"+x);
   var tabName=null;
+  var patientName=null;
   for (var i=0; i<in1.Blocks.length; i++){
   
     if(parseFloat(in1.Blocks[i].Geometry.BoundingBox.Top)>(y-(h*8)) && parseFloat(in1.Blocks[i].Geometry.BoundingBox.Top) < y && parseFloat(in1.Blocks[i].Geometry.BoundingBox.Left) > x && parseFloat((in1.Blocks[i].Geometry.BoundingBox.Left)) < x+w && in1.Blocks[i].BlockType == "LINE"){
-    //console.log("Tabate Text Found at ");
+    //console.log("Tabate Name");
+      //console.log("Tabate Text Found at ");
     //console.log(in1.Blocks[i].Geometry.BoundingBox.Width);
     //console.log(in1.Blocks[i].Geometry.BoundingBox.Height);
     //console.log(in1.Blocks[i].Geometry.BoundingBox.Left);
@@ -295,17 +298,26 @@ async function getTabletName(in1,x,y,w,h) {
     //console.log(y-(h*8));
     //console.log(h);
     //console.log(in1.Blocks[i].Geometry.BoundingBox.Top+(2*h));
-
-    
-    //console.log("Text is "+in1.Blocks[i].Text);
     if(tabName == null){
       tabName=in1.Blocks[i].Text;
     }else{
       tabName=tabName+" "+in1.Blocks[i].Text;
 
     }
-  }
+    
+    //console.log("Text is "+in1.Blocks[i].Text);
+    
+  }else if(parseFloat(in1.Blocks[i].Geometry.BoundingBox.Top) < (y-(h*8)) && parseFloat(in1.Blocks[i].Geometry.BoundingBox.Left) > x && parseFloat((in1.Blocks[i].Geometry.BoundingBox.Left)) < x+w && in1.Blocks[i].BlockType == "LINE"){
+//console.log("patientName");
+    if(patientName == null){
+      patientName=in1.Blocks[i].Text;
+    }else{
+      patientName=patientName+" "+in1.Blocks[i].Text;
 
+    }
+
+
+  }
   // else{
   //   console.log(parseFloat(in1.Blocks[i].Geometry.BoundingBox.Top) < y);
   //   console.log("Not Matched Values "+parseFloat(in1.Blocks[i].Geometry.BoundingBox.Top) +" Y: "+ y)
@@ -327,7 +339,10 @@ async function getTabletName(in1,x,y,w,h) {
 
   }
   console.log("Tablet Name : "+tabName);
+  console.log("Patient Name is "+patientName);
+
   tabletName=tabName;
+  patientFullName=patientName;
 
 }
 async function getTablateCount(timeOfDay,in1,x,y,w,h){
