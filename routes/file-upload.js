@@ -3,6 +3,7 @@ const router = express.Router();
 const AWS = require("aws-sdk");
 const multer = require("multer");
 const keys = require("../config/keys");
+const moment = require('moment');    
 // const Files= require('./../models/files');
 
  const storage = multer.memoryStorage();
@@ -24,20 +25,18 @@ var bedtimeTabCnt=0;
 
 
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
 
   upload(req, res, (err) => {
-    
-    const moment = require('moment');    
-    //File Upload started
+     //File Upload started
     var startDate = new Date();
   
     //get user details 
-//      const email = req.user.email;
-//      const name = req.user.name;
+     const email = req.user.email;
+      const name = req.user.name;
        //get user details 
-       const email = "pankajhpatil21@gmail.com";
-       const name = "admin";
+//       const email = "pankajhpatil21@gmail.com";
+//       const name = "admin";
  
   
       const file = req.file;
@@ -185,7 +184,7 @@ async function getTextFromImage(params,file) {
             var pdata = {
               'docName': docName, 'tabletName': tabletName, 'morningTabCnt': morningTabCnt, 'middayTabCnt': middayTabCnt, 
               'eveTabCnt': eveTabCnt, 'bedtimeTabCnt': bedtimeTabCnt, 'fileDesc': file.originalname, 'fileName': file.originalname,
-              'startDate': Date.parse(startDate,'MM/DD/YYYY'),'endDate': eDate, 'expiryDate': Date.parse(expiryDate,'MM/DD/YYYY'),'modifiedDate': Date.now()
+              'startDate': moment(Date.parse(startDate,'MM/DD/YYYY'), "YYYY-MM-DD"),'endDate': moment(eDate, "YYYY-MM-DD"), 'expiryDate': moment(Date.parse(expiryDate,'MM/DD/YYYY'), "YYYY-MM-DD"),'modifiedDate': Date.now()
             };
             
             
