@@ -3,8 +3,8 @@ const router=express.Router();
 const { ensureAuthenticated }= require('./../config/auth');
 const AWS = require('aws-sdk');
 
-const User = require('./../models/user');
-const Files = require('./../models/files');
+// const User = require('./../models/user');
+// const Files = require('./../models/files');
  
 //dynamoDb
 const dynamoDbObj = require('./../models/connect');
@@ -15,18 +15,18 @@ router.get('/view',ensureAuthenticated,(req,res)=>{
     const currentuser =req.user;
     const email = req.user.email;
     
-    Files.find({ email : req.user.email },(err, data) => {
-        
+    // Files.find({ email : req.user.email },(err, data) => {
+        console.log('currentuser'+currentuser);
         //get schedule from dynamodb
         var params = {
         TableName: 'files',
-        FilterExpression: "#sn = :i",
+        FilterExpression: "#sn <> :i",
         ExpressionAttributeNames:{
             "#sn": "name"
         },
         ExpressionAttributeValues : {
             // ':i'  : 'mySchedule-1574717348492'
-            ':i'  : 'admin'
+            ':i'  : ' '
         }
         };
 
@@ -44,7 +44,7 @@ router.get('/view',ensureAuthenticated,(req,res)=>{
                 })
             }
         })
-    })
+    // })
 });
 
 //add shedule manually

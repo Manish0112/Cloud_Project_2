@@ -15,9 +15,11 @@
         <li class="nav-item">
             <a class="nav-link" href="/schedule/view">My Schedules</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/listUsers">Users</a>
-        </li>
+        <% if(user.name == 'admin'){ %>
+            <li class="nav-item">
+                <a class="nav-link" href="/listUsers">Users</a>
+            </li>
+        <%}%>
         </ul>
         <span class="navbar-text">
         <a href="/users/logout" >Logout</a>
@@ -42,7 +44,7 @@
             <% data.forEach(function (data) { %>
             <form action="/delete" method="POST">
                 <tr class="table-secondary">
-                    <td><%= data.user %></td>
+                    <td><%= data.name %></td>
                     <th scope="row"><%= data.fileName %></th>
                     <td><%= data.uploadTime %></td>
                     <td><a href='<%=cf + data.fileName %>'><i class="medium fas fa-file-download"></i></a></td>

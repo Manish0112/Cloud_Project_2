@@ -3,7 +3,7 @@ const router = express.Router();
 const AWS = require("aws-sdk");
 const multer = require("multer");
 const keys = require("../config/keys");
-const Files= require('./../models/files');
+// const Files= require('./../models/files');
 
  const storage = multer.memoryStorage();
  const upload = multer({storage: storage, limits: {fileSize: 10 * 1024 * 1024}}).single('myPrescription');
@@ -111,25 +111,25 @@ router.post('/', (req, res) => {
             });
 
             //mongo
-            const newFile = new Files({
-              user : name,
-              email : email,
-              fileUrl:data.Location,
-              fileName: myFileName,
-              fileDesc: file.originalname,
-              uploadTime: ((endDate - startDate) / 1000),
-              modifiedDate: ((endDate - startDate) / 1000)
-            });
-            //check if already exisits
-            Files.findOne({ fileName:file.originalname })
-            .then( (fileName) => {
+            // const newFile = new Files({
+            //   user : name,
+            //   email : email,
+            //   fileUrl:data.Location,
+            //   fileName: myFileName,
+            //   fileDesc: file.originalname,
+            //   uploadTime: ((endDate - startDate) / 1000),
+            //   modifiedDate: ((endDate - startDate) / 1000)
+            // });
+            // //check if already exisits
+            // Files.findOne({ fileName:file.originalname })
+            // .then( (fileName) => {
 
-                newFile.save()
-                .then(file => {
-                  console.log('File Uploaded');
-              })
-              .catch(err=>console.log(err));
-            });
+            //     newFile.save()
+            //     .then(file => {
+            //       console.log('File Uploaded');
+            //   })
+            //   .catch(err=>console.log(err));
+            // });
 
         }
       });

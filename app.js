@@ -3,7 +3,6 @@ const expressLayouts=require('express-ejs-layouts');
 const flash=require('connect-flash');
 const session=require('express-session');
 const passport=require('passport');
-const mongoose=require('mongoose');
 //for file upload
 // const multer = require("multer");
 
@@ -13,12 +12,12 @@ const app=express();
 require('./config/passport')(passport);
 
 //DB config
-const db=require('./config/keys').MongoURI;
+// const db=require('./config/keys').MongoURI;
 
 //connect to Mongo
-mongoose.connect(db,{ useNewUrlParser: true})
-.then(()=>console.log('MongoDb connected!!'))
-.catch(err=>console.log(err));
+// mongoose.connect(db,{ useNewUrlParser: true})
+// .then(()=>console.log('MongoDb connected!!'))
+// .catch(err=>console.log(err));
 
 //EJS
 app.use(expressLayouts);

@@ -1,5 +1,5 @@
 const LocalStrategy = require('passport-local').Strategy;
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const keys = require('./keys');
 
@@ -10,32 +10,64 @@ const GoogleStrategy = require('passport-google-oauth20');
 const FacebookStrategy = require('passport-facebook').Strategy;
 
 //Load User Model
-const User = require('./../models/user');
+// const User = require('./../models/user');
+
+//dynamoDb
+const dynamoDbObj = require('./../models/connect');
 
 module.exports = function(passport) {
     passport.use(
         new LocalStrategy( {usernameField: 'email'}, (email, password, done) => {
-            //Match User
-            User.findOne( { email: email} )
-            .then(user => {
-                
-                if(!user){
-                    return done(null, false, { message: 'That email is not registered!'});
+
+            //dynamo
+            var params= {
+                TableName: 'user',
+                Key: {
+                    'email': email
                 }
+            };
 
-                //Match Password
-                bcrypt.compare(password, user.password, (err, isMatch)=>{
-                    if(err) throw err;
+            dynamoDbObj.get(params, function (err, data) {
 
-                    if(isMatch){
+                if (err){ throw err}
+                else{
+                    
+                    if(Object.entries(data).length === 0 && data.constructor === Object){
+                        return done(null, false, { message: 'That email is not registered!'});
+                    }
+
+                    var user=data.Item;
+                    
+                    if(password.localeCompare(user.password) == 0){
                         return done(null,user);
                     }
                     else{
                         return done(null, false, { message: 'Password incorrect.'});
                     }
-                });
+                }
             })
-            .catch( err => console.log(err));
+
+            //Match User
+            // User.findOne( { email: email} )
+            // .then(user => {
+                
+            //     if(!user){
+            //         return done(null, false, { message: 'That email is not registered!'});
+            //     }
+
+            //     //Match Password
+            //     bcrypt.compare(password, user.password, (err, isMatch)=>{
+            //         if(err) throw err;
+
+            //         if(isMatch){
+            //             return done(null,user);
+            //         }
+            //         else{
+            //             return done(null, false, { message: 'Password incorrect.'});
+            //         }
+            //     });
+            // })
+            // .catch( err => console.log(err));
         })
     );
 
@@ -50,40 +82,40 @@ module.exports = function(passport) {
 
             const email=profile.emails[0].value;
             
-            User.findOne( { email: email} )
-                .then(user => {
+            // User.findOne( { email: email} )
+            //     .then(user => {
 
-                if(user){
-                    return done(null,user);
-                }
+            //     if(user){
+            //         return done(null,user);
+            //     }
                 
-                //New user
-                const name=profile.displayName;
+            //     //New user
+            //     const name=profile.displayName;
                 
-                const password=123456;
-                const newUser = new User({
-                    name,
-                    email,
-                    password
-                });
+            //     const password=123456;
+            //     const newUser = new User({
+            //         name,
+            //         email,
+            //         password
+            //     });
 
-                //Hash password
-                bcrypt.genSalt(10, (err,salt) => 
-                   bcrypt.hash(newUser.password, salt, (err,hash) => {
-                        if(err) throw err;
-                        //set password to hashed
-                        newUser.password=hash;
-                        //save user
-                        newUser.save()
-                        .then(user => {
-                            return done(null,user);
-                        })
-                        .catch(err=>console.log(err));
+            //     //Hash password
+            //     bcrypt.genSalt(10, (err,salt) => 
+            //        bcrypt.hash(newUser.password, salt, (err,hash) => {
+            //             if(err) throw err;
+            //             //set password to hashed
+            //             newUser.password=hash;
+            //             //save user
+            //             newUser.save()
+            //             .then(user => {
+            //                 return done(null,user);
+            //             })
+            //             .catch(err=>console.log(err));
 
-                   }))
+            //        }))
 
-            })
-            .catch( err => console.log(err));
+            // })
+            // .catch( err => console.log(err));
                 
         }));
 
@@ -99,37 +131,49 @@ module.exports = function(passport) {
                 const name=profile.displayName;
                 const email='abc@gmail.com';
                 const password=123456;
-                const newUser = new User({
-                    name,
-                    email,
-                    password
-                });
+                // const newUser = new User({
+                //     name,
+                //     email,
+                //     password
+                // });
 
 
-                //Hash password
-                bcrypt.genSalt(10, (err,salt) => 
-                   bcrypt.hash(newUser.password, salt, (err,hash) => {
-                        if(err) throw err;
-                        //set password to hashed
-                        newUser.password=hash;
-                        //save user
-                        newUser.save()
-                        .then(user => {
-                            return done(null,user);
-                        })
-                        .catch(err=>console.log(err));
+                // //Hash password
+                // bcrypt.genSalt(10, (err,salt) => 
+                //    bcrypt.hash(newUser.password, salt, (err,hash) => {
+                //         if(err) throw err;
+                //         //set password to hashed
+                //         newUser.password=hash;
+                //         //save user
+                //         newUser.save()
+                //         .then(user => {
+                //             return done(null,user);
+                //         })
+                //         .catch(err=>console.log(err));
 
-                   }))
+                //    }))
             }
         ));
 
     passport.serializeUser((user, done) => {
-        done(null, user.id);
+        done(null, user.email);
     });
     
-    passport.deserializeUser((id, done) => {
-        User.findById(id, (err, user) => {
-            done(err, user);
-        });
+    passport.deserializeUser((email, done) => {
+
+        var params= {
+            TableName: 'user',
+            Key: {
+                'email': email
+            }
+        };
+
+        dynamoDbObj.get(params, function (err, data) {
+
+            if (err){ throw err}
+            else{
+                done(err, data.Item);
+            }
+        })
     });
 }

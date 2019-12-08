@@ -4,7 +4,7 @@ const bcrypt=require('bcryptjs');
 const passport=require('passport');
 const AWS = require('aws-sdk');
 const keys=require('./../config/keys');
-const User = require('./../models/user');
+// const User = require('./../models/user');
 
 //Login Page
 router.get('/login',(req,res)=>res.render('login'));
@@ -78,29 +78,29 @@ router.post('/register', (req,res)=>{
                         // console.log(hashedPwd);
             
 
-                        const newUser = new User({
-                            name,
-                            email,
-                            password,
-                            level: 'U'
-                        });
+                        // const newUser = new User({
+                        //     name,
+                        //     email,
+                        //     password,
+                        //     level: 'U'
+                        // });
         
         
                         //Hash password
-                        bcrypt.genSalt(10, (err,salt) => 
-                            bcrypt.hash(newUser.password, salt, (err,hash) => {
-                                if(err) throw err;
-                                //set password to hashed
-                                newUser.password=hash;
-                                //save user
-                                newUser.save()
-                                .then(user => {
-                                    console.log('User registered in Mongo');
-                                })
-                                .catch(err=>console.log(err));
+                        // bcrypt.genSalt(10, (err,salt) => 
+                        //     bcrypt.hash(newUser.password, salt, (err,hash) => {
+                        //         if(err) throw err;
+                        //         //set password to hashed
+                        //         newUser.password=hash;
+                        //         //save user
+                        //         newUser.save()
+                        //         .then(user => {
+                        //             console.log('User registered in Mongo');
+                        //         })
+                        //         .catch(err=>console.log(err));
         
         
-                        }))
+                        // }))
 
                         //update in dynamodb
                         var input = {
