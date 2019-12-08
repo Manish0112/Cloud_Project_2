@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const AWS = require("aws-sdk");
 const keys = require("../config/keys");
-const Files= require('./../models/files');
+// const Files= require('./../models/files');
 
 router.post('/', (req, res) => {
 
@@ -19,7 +19,7 @@ router.post('/', (req, res) => {
         endpoint: 's3.amazonaws.com',
         port: 443
     });
-    console.log(fileName);
+    // console.log(fileName);
     var params1 = {
         Bucket: keys.bucketName,
         Delete: {
@@ -61,15 +61,15 @@ router.post('/', (req, res) => {
             });
 
             //delete from mongo
-            Files.deleteOne({ fileUrl: fileUrl }, function (err) {
-                if (err) {
-                    return err;
-                }
-                else{
-                    console.log('File deleted');
-                }
+            // Files.deleteOne({ fileUrl: fileUrl }, function (err) {
+            //     if (err) {
+            //         return err;
+            //     }
+            //     else{
+            //         console.log('File deleted');
+            //     }
                 
-              });
+            //   });
         }      
     });
 

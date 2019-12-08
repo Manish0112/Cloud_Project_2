@@ -15,9 +15,11 @@
         <li class="nav-item">
           <a class="nav-link" href="/schedule/view">Schedules</a>
         </li>
+        <% if(user.name == 'admin'){ %>
         <li class="nav-item">
             <a class="nav-link" href="/listUsers">Users</a>
         </li>
+        <%}%>
         <li class="nav-item">
           <a class="nav-link" href="#">About</a>
         </li>
