@@ -9,8 +9,6 @@ const GoogleStrategy = require('passport-google-oauth20');
 //FB oauth
 const FacebookStrategy = require('passport-facebook').Strategy;
 
-const AmazonStrategy = require('passport-amazon').Strategy;
-
 //Load User Model
 // const User = require('./../models/user');
 
@@ -73,22 +71,6 @@ module.exports = function(passport) {
         })
     );
 
-    //Login with Amazon
-    passport.use(new AmazonStrategy({
-        clientID: keys.AMAZON_CLIENT_ID,
-        clientSecret: keys.AMAZON_CLIENT_SECRET,
-        callbackURL: "/users/auth/amazon/callback"
-      },
-      function(accessToken, refreshToken, profile, done) {
-
-        console.log(profile);
-        // User.findOrCreate({ amazonId: profile.id }, function (err, user) {
-        //   return done(err, user);
-        // });
-      }
-    ));
-
-    //Login with google
     passport.use(
         new GoogleStrategy(
             {
@@ -137,41 +119,41 @@ module.exports = function(passport) {
                 
         }));
 
-    // passport.use(
-    //     new FacebookStrategy(
-    //         {
-    //             clientID: keys.faceBookID,
-    //             clientSecret: keys.faceBookSecret,
-    //             callbackURL: "/users/auth/facebook/callback"
-    //         },
-    //         (accessToken, refreshToken, profile, done) => {
+    passport.use(
+        new FacebookStrategy(
+            {
+                clientID: keys.faceBookID,
+                clientSecret: keys.faceBookSecret,
+                callbackURL: "/users/auth/facebook/callback"
+            },
+            (accessToken, refreshToken, profile, done) => {
                 
-    //             const name=profile.displayName;
-    //             const email='abc@gmail.com';
-    //             const password=123456;
-    //             // const newUser = new User({
-    //             //     name,
-    //             //     email,
-    //             //     password
-    //             // });
+                const name=profile.displayName;
+                const email='abc@gmail.com';
+                const password=123456;
+                // const newUser = new User({
+                //     name,
+                //     email,
+                //     password
+                // });
 
 
-    //             // //Hash password
-    //             // bcrypt.genSalt(10, (err,salt) => 
-    //             //    bcrypt.hash(newUser.password, salt, (err,hash) => {
-    //             //         if(err) throw err;
-    //             //         //set password to hashed
-    //             //         newUser.password=hash;
-    //             //         //save user
-    //             //         newUser.save()
-    //             //         .then(user => {
-    //             //             return done(null,user);
-    //             //         })
-    //             //         .catch(err=>console.log(err));
+                // //Hash password
+                // bcrypt.genSalt(10, (err,salt) => 
+                //    bcrypt.hash(newUser.password, salt, (err,hash) => {
+                //         if(err) throw err;
+                //         //set password to hashed
+                //         newUser.password=hash;
+                //         //save user
+                //         newUser.save()
+                //         .then(user => {
+                //             return done(null,user);
+                //         })
+                //         .catch(err=>console.log(err));
 
-    //             //    }))
-    //         }
-    //     ));
+                //    }))
+            }
+        ));
 
     passport.serializeUser((user, done) => {
         done(null, user.email);

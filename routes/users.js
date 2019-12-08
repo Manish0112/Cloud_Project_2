@@ -164,16 +164,4 @@ router.get('/auth/facebook/callback',passport.authenticate('facebook'), (req,res
     res.redirect('/dashboard');
 });
 
-//Amazon oauth
-router.get('/auth/amazon',
-    passport.authenticate('amazon'));
-
-router.get('/auth/amazon/callback', passport.authenticate('amazon'), function(req, res) {
-    // Successful authentication, redirect home.
-    res.redirect('/dashboard');
-});
-
-
-  //, { failureRedirect: '/login' }
-
 module.exports=router;
