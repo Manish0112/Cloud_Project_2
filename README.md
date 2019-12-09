@@ -1,4 +1,9 @@
-# My Medication 
+<a href="https://manishlokhande.com/">
+    <img src="https://manish-dropbox.s3.us-east-2.amazonaws.com/MedicationLogo.png" alt="My Medication" title="My Medication" align="right" height="100" />
+</a>
+
+My Medication 
+======================
 - University Name: [San jose state university](http://www.sjsu.edu/)
 - Course: [Cloud Technologies](http://info.sjsu.edu/web-dbgen/catalog/courses/CMPE281.html)
 - Professor [Sanjay Garje](https://www.linkedin.com/in/sanjaygarje/)
