@@ -5,9 +5,12 @@ const AWS = require('aws-sdk');
 const moment = require('moment'); 
 var schedule = require('node-schedule');
 const nodeMailer = require('nodemailer');
+const keys = require("../config/keys");
 
 //dynamoDb
 const dynamoDbObj = require('../models/connect');
+//Twilio setup for messaging service
+const client = require('twilio')(keys.twillio_accountSid, keys.twillio_authToken);
 
 //For mail
 var transporter = nodeMailer.createTransport({
@@ -20,6 +23,9 @@ var transporter = nodeMailer.createTransport({
        }
    });
 
+
+    
+    
 var morning = schedule.scheduleJob('9 * 9 * * *', function(){
 
     //fetch users
@@ -42,6 +48,7 @@ var morning = schedule.scheduleJob('9 * 9 * * *', function(){
             for(let i=0;i<data.Items.length;i++){
 
                 let temp=data.Items[i];
+                let phone=temp.phone;
 
                 var params = {
                     TableName: 'prescriptions',
@@ -82,16 +89,34 @@ var morning = schedule.scheduleJob('9 * 9 * * *', function(){
                                 else
                                 console.log(info);
                             });
+                            console.log(phone);
+                            if(phone){
+                              phone=phone.replace(phone,'+1');
+                              phone='+1'+phone;
+                            //Twilio : Publish Message
+                            client.messages.create({
+                              body: 'Hello, '+temp1.patientName+',\nThis message is to remind you regarding your medicine '+temp1.tabletName+' morning dose. This medicine is recommended by dr. '+temp1.docName+'.\nRegards,\nMy Medication Team',
+                              from: '+18635784228',
+                              to: phone
+                            })
+                          .then(message => console.log(message.sid));
+                            }else{
+                              console.log('No phone provided');
                             }
+                          }
                         }
                     }
+                    
+ 
+
                 });
             }
         }
     })
     
+
 });
-var midday = schedule.scheduleJob('9 * 12 * * *', function(){
+var midday = schedule.scheduleJob('9 * 13 * * *', function(){
     
     //fetch users
     var paramsdb = {
@@ -113,6 +138,7 @@ var midday = schedule.scheduleJob('9 * 12 * * *', function(){
             for(let i=0;i<data.Items.length;i++){
 
                 let temp=data.Items[i];
+                let phone=temp.phone;
 
                 var params = {
                     TableName: 'prescriptions',
@@ -153,6 +179,19 @@ var midday = schedule.scheduleJob('9 * 12 * * *', function(){
                                 else
                                 console.log(info);
                             });
+                            if(phone){
+                              phone=phone.replace(phone,'+1');
+                              phone='+1'+phone;
+                            //Twilio : Publish Message
+                            client.messages.create({
+                              body: 'Hello, '+temp1.patientName+',\nThis message is to remind you regarding your medicine '+temp1.tabletName+' midday dose. This medicine is recommended by dr. '+temp1.docName+'.\nRegards,\nMy Medication Team',
+                              from: '+18635784228',
+                              to: phone
+                            })
+                          .then(message => console.log(message.sid));
+                            }else{
+                              console.log('No phone provided');
+                            }
                             }
                         }
                     }
@@ -161,7 +200,7 @@ var midday = schedule.scheduleJob('9 * 12 * * *', function(){
         }
     })
 });
-var evening = schedule.scheduleJob('9 * 18 * * *', function(){
+var evening = schedule.scheduleJob('9 * 17 * * *', function(){
     
     //fetch users
     var paramsdb = {
@@ -183,6 +222,7 @@ var evening = schedule.scheduleJob('9 * 18 * * *', function(){
             for(let i=0;i<data.Items.length;i++){
 
                 let temp=data.Items[i];
+                let phone=temp.phone;
 
                 var params = {
                     TableName: 'prescriptions',
@@ -223,6 +263,19 @@ var evening = schedule.scheduleJob('9 * 18 * * *', function(){
                                 else
                                 console.log(info);
                             });
+                            if(phone){
+                              phone=phone.replace(phone,'+1');
+                              phone='+1'+phone;
+                            //Twilio : Publish Message
+                            client.messages.create({
+                              body: 'Hello, '+temp1.patientName+',\nThis message is to remind you regarding your medicine '+temp1.tabletName+' evening dose. This medicine is recommended by dr. '+temp1.docName+'.\nRegards,\nMy Medication Team',
+                              from: '+18635784228',
+                              to: phone
+                            })
+                          .then(message => console.log(message.sid));
+                            }else{
+                              console.log('No phone provided');
+                            }
                             }
                         }
                     }
@@ -231,7 +284,7 @@ var evening = schedule.scheduleJob('9 * 18 * * *', function(){
         }
     })
 });
-var midnight = schedule.scheduleJob('9 * 10 * * *', function(){
+var midnight = schedule.scheduleJob('9 * 21 * * *', function(){
     
     //fetch users
     var paramsdb = {
@@ -253,6 +306,7 @@ var midnight = schedule.scheduleJob('9 * 10 * * *', function(){
             for(let i=0;i<data.Items.length;i++){
 
                 let temp=data.Items[i];
+                let phone=temp.phone;
 
                 var params = {
                     TableName: 'prescriptions',
@@ -293,6 +347,19 @@ var midnight = schedule.scheduleJob('9 * 10 * * *', function(){
                                 else
                                 console.log(info);
                             });
+                            if(phone){
+                              phone=phone.replace(phone,'+1');
+                              phone='+1'+phone;
+                            //Twilio : Publish Message
+                            client.messages.create({
+                              body: 'Hello, '+temp1.patientName+',\nThis message is to remind you regarding your medicine '+temp1.tabletName+' bedtime dose. This medicine is recommended by dr. '+temp1.docName+'.\nRegards,\nMy Medication Team',
+                              from: '+18635784228',
+                              to: phone
+                            })
+                          .then(message => console.log(message.sid));
+                            }else{
+                              console.log('No phone provided');
+                            }
                             }
                         }
                     }
