@@ -45,7 +45,7 @@ router.post('/', (req, res) => {
             const dynamoDbObj = require('./../models/connect');
 
             var params = {
-                TableName: 'files',
+                TableName: 'prescriptions',
                 Key: {
                     "fileName": fileName
                 }
@@ -59,17 +59,6 @@ router.post('/', (req, res) => {
                     console.log('File deleted');
                 }
             });
-
-            //delete from mongo
-            // Files.deleteOne({ fileUrl: fileUrl }, function (err) {
-            //     if (err) {
-            //         return err;
-            //     }
-            //     else{
-            //         console.log('File deleted');
-            //     }
-                
-            //   });
         }      
     });
 

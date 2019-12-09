@@ -170,14 +170,14 @@ async function getTextFromImage(params,input) {
               'docName': docName, 'tabletName': tabletName, 'morningTabCnt': morningTabCnt, 'middayTabCnt': middayTabCnt, 
               'eveTabCnt': eveTabCnt, 'bedtimeTabCnt': bedtimeTabCnt,'patientName':patientFullName,'refillByDate':moment(refillByDate).format("YYYY-MM-DD"),'refillQuota':refillQuota,
               'startDate': moment(startDate).format("YYYY-MM-DD"),'endDate': moment(eDate).format("YYYY-MM-DD"), 'expiryDate': moment(expiryDate).format("YYYY-MM-DD"),
-              'ActiveFlag' : 'N'
+              'activeFlag' : 'N'
             };
             
             
 
             const dynamoDbObj = require('./../models/connect');
             var paramsDb = {
-              TableName: "files",
+              TableName: "prescriptions",
               Item: pdata
           };
 

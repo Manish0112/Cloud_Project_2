@@ -29,13 +29,13 @@ router.get('/files',ensureAuthenticated,(req,res)=>{
     if(currentuser.name == 'admin'){
 
         var params = {
-            TableName: 'files'
+            TableName: 'prescriptions'
         };
 
     }else{
 
         var params = {
-            TableName: 'files',
+            TableName: 'prescriptions',
             FilterExpression: '#sn = :i',
             ExpressionAttributeNames:{
                 '#sn': 'email'

@@ -2,12 +2,21 @@ const express=require('express');
 const router=express.Router();
 const { ensureAuthenticated }= require('./../config/auth');
 const AWS = require('aws-sdk');
+const nodeMailer = require('nodemailer');
 
-// const User = require('./../models/user');
-// const Files = require('./../models/files');
- 
 //dynamoDb
 const dynamoDbObj = require('./../models/connect');
+
+//For mail
+var transporter = nodeMailer.createTransport({
+    service: 'gmail',
+    port: 465,
+    secure: true,
+    auth: {
+           user: 'manishlokhande111@gmail.com',
+           pass: 'M@nish123'
+       }
+   });
 
 //view schedules
 router.get('/view',ensureAuthenticated,(req,res)=>{
@@ -18,7 +27,7 @@ router.get('/view',ensureAuthenticated,(req,res)=>{
     if(currentuser.name == 'admin'){
         
         var params = {
-            TableName: 'files'
+            TableName: 'prescriptions'
         };
 
     }
@@ -26,7 +35,7 @@ router.get('/view',ensureAuthenticated,(req,res)=>{
 
         //get schedule from dynamodb
         var params = {
-        TableName: 'files',
+        TableName: 'prescriptions',
         FilterExpression: "#sn = :i",
         ExpressionAttributeNames:{
             "#sn": "email"
@@ -61,7 +70,7 @@ router.get('/add',ensureAuthenticated,(req,res)=>{
     const email = req.user.email;
     
     var params = {
-        TableName: 'files',
+        TableName: 'prescriptions',
         FilterExpression: "#sn <> :i",
         ExpressionAttributeNames:{
             "#sn": "email"
@@ -116,7 +125,7 @@ router.post('/add', (req,res)=>{
             //for delete schedule
             console.log('Inside delete');
             var params = {
-                TableName: 'files',
+                TableName: 'prescriptions',
                 Key: {
                     'fileName': sName
                 }
@@ -168,7 +177,7 @@ router.post('/add', (req,res)=>{
             };
 
             var paramsDb = {
-                TableName: 'files',
+                TableName: 'prescriptions',
                 Item:  input
             };
 
@@ -195,7 +204,7 @@ router.post('/edit', (req,res)=>{
     if(editBtn == 'edit'){
 
         var params= {
-            TableName: 'files',
+            TableName: 'prescriptions',
             Key: {
                 'fileName': fileName
             }
@@ -217,7 +226,87 @@ router.post('/edit', (req,res)=>{
     }
     else if(activateBtn == 'activate'){
 
-        res.render('activate');
+        var input = {
+            'fileName': fileName, 'activeFlag' : 'Y'
+        };
+
+        //send mail confirmation
+        const mailOptions = {
+            from: 'manishlokhande111@gmail.com', // sender address
+            to: 'manishlokhande96@gmail.com', // list of receivers
+            subject: 'Activation of the schedule', // Subject line
+            html: '<p>Your schedule for the uploaded prescription is activated.</p>'// plain text body
+        };
+
+        transporter.sendMail(mailOptions, function (err, info) {
+            if(err)
+              console.log(err)
+            else
+              console.log(info);
+         });
+
+
+        //update in dyanamo
+        var params = {
+            TableName: 'prescriptions',
+            Key : {
+                "fileName" : fileName
+            },
+            UpdateExpression: "set #sn = :i",
+            ExpressionAttributeNames:{
+                "#sn": "activeFlag"
+            },
+            ExpressionAttributeValues : {
+                ':i'  : 'Y'
+            }
+        };
+
+        dynamoDbObj.update(params, function (err, data) {
+                    
+            if (err) {
+                console.log(err);
+                req.flash('error_msg','Error Occured while activating schedule!');
+                res.redirect('/schedule/view');
+            } else {
+                console.log('Schedule Activated');
+                req.flash('success_msg','Schedule Activated!');
+                res.redirect('/schedule/view');
+            }
+        });
+    }
+    else if(activateBtn == 'deactivate'){
+
+        var input = {
+            'fileName': fileName, 'activeFlag' : 'Y'
+        };
+
+        //update in dynamo
+        var params = {
+            TableName: 'prescriptions',
+            Key : {
+                "fileName" : fileName
+            },
+            UpdateExpression: "set #sn = :i",
+            ExpressionAttributeNames:{
+                "#sn": "activeFlag"
+            },
+            ExpressionAttributeValues : {
+                ':i'  : 'N'
+            }
+        };
+
+        dynamoDbObj.update(params, function (err, data) {
+                    
+            if (err) {
+                console.log(err);
+                req.flash('error_msg','Error Occured while deactivating schedule!');
+                res.redirect('/schedule/view');
+            } else {
+                console.log('Schedule Deactivated');
+                req.flash('success_msg','Schedule Deactivated!');
+                res.redirect('/schedule/view');
+            }
+        });
     }
 });
 
