@@ -9,6 +9,10 @@ const dynamoDbObj = require('./../models/connect');
 //Welcome Page
 router.get('/',(req,res)=>res.render('welcome'));
 
+var schedule = require('node-schedule');
+var j = schedule.scheduleJob('10 * * * * *', function(){
+    console.log('Today is recognized by Rebecca Black!');
+});
 //dahsboard Page
 router.get('/dashboard',ensureAuthenticated,(req,res)=>{
 
