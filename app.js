@@ -56,6 +56,8 @@ app.use('/upload',require('./routes/file-upload'));
 app.use('/delete',require('./routes/file-delete'));
 app.use('/process',require('./routes/file-process'));
 app.use('/schedule',require('./routes/schedule'));
+app.use('/emailscheduler',require('./routes/emailscheduler'));
+
 
 
 const PORT = process.env.PORT || 5000;
