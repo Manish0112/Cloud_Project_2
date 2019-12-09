@@ -170,7 +170,7 @@ async function getTextFromImage(params,input) {
               'docName': docName, 'tabletName': tabletName, 'morningTabCnt': morningTabCnt, 'middayTabCnt': middayTabCnt, 
               'eveTabCnt': eveTabCnt, 'bedtimeTabCnt': bedtimeTabCnt,'patientName':patientFullName,'refillByDate':moment(refillByDate).format("YYYY-MM-DD"),'refillQuota':refillQuota,
               'startDate': moment(startDate).format("YYYY-MM-DD"),'endDate': moment(eDate).format("YYYY-MM-DD"), 'expiryDate': moment(expiryDate).format("YYYY-MM-DD"),
-              'ActiveFlag' : 'N'
+              'activeFlag' : 'N'
             };
             
             
@@ -248,19 +248,24 @@ async function getTabDataByTime(student,text) {
     if (!expiryfound && jText.indexOf("DISCARD AFTER")>= 0 && student.Blocks[i].BlockType == "LINE"){
       console.log("Expiration Date");
       console.log(jText.replace("DISCARD AFTER:",'').trim());
-      expiryDate=jText.replace("DISCARD AFTER:",'').trim();
+      expiryDate=jText.replace("DISCARD AFTER",'').trim();
+      expiryDate=expiryDate.replace(":",'').trim();
+
       expiryfound=true;
     }
     if (!startfound && jText.indexOf("DATE FILLED")>= 0 && student.Blocks[i].BlockType == "LINE"){
       console.log("Start Date");
       console.log(jText.replace("DATE FILLED:",'').trim());
-      startDate=jText.replace("DATE FILLED:",'').trim();
+      startDate=jText.replace("DATE FILLED",'').trim();
+      startDate=startDate.replace(":",'').trim();
       startfound=true;
     }
     if (!qtyfound && jText.indexOf("QTY") >= 0 && student.Blocks[i].BlockType == "LINE"){
       console.log("Total Quantity");
       console.log(jText.replace("QTY:",'').trim());
-      qty=jText.replace("QTY:",'').trim();
+      qty=jText.replace("QTY",'').trim();
+      qty=qty.replace(":",'').trim();
+
       qtyfound=true;
     }
 
@@ -269,7 +274,11 @@ async function getTabDataByTime(student,text) {
       refillByDate=jText.substr(jText.toLowerCase().indexOf('by')+2).trim();
       console.log(jText);
       console.log(refillByDate);
+      if(jText.indexOf('REFILLS:') > -1){
       refillQuota=jText.substr(jText.indexOf('REFILLS:')+8,(jText.toLowerCase().indexOf('by'))-8).trim();
+    }else{
+      refillQuota=jText.substr(jText.indexOf('REFILLS')+7,(jText.toLowerCase().indexOf('by'))-7).trim();
+    }
       refillbyfound=true;
     }
 
