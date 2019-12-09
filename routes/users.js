@@ -14,11 +14,11 @@ router.get('/register',(req,res)=>res.render('register'));
 
 //Register Handle
 router.post('/register', (req,res)=>{
-    const { name, email, password, password2} = req.body;
+    const { name, email, password, password2,phone} = req.body;
     let errors = [];
 
     //check required fields
-    if(!name || !email || !password ||!password2){
+    if(!name || !email || !password ||!password2 || !phone){
         errors.push({ msg:'Please fill in all fields!' });
     }
 
@@ -32,6 +32,9 @@ router.post('/register', (req,res)=>{
         errors.push({ msg: 'Password should be at least 6 characters'});
     }
 
+    if(phone.length < 6){
+        errors.push({ msg: 'Mobile number should be at least 10 digits'});
+    }
 
     if(errors.length > 0){
         res.render('register',{
@@ -39,7 +42,8 @@ router.post('/register', (req,res)=>{
             name,
             email,
             password,
-            password2
+            password2,
+            phone
         });
     }
     else{
@@ -64,7 +68,8 @@ router.post('/register', (req,res)=>{
                             name,
                             email,
                             password,
-                            password2
+                            password2,
+                            phone
                     });
                     }
                 else{
@@ -72,7 +77,7 @@ router.post('/register', (req,res)=>{
                     //update in dynamodb
                     var input = {
                         'email': email, 'name': name,
-                        'level': 'U', 'password': password
+                        'level': 'U', 'password': password , 'phone': phone
                     };
                     var params = {
                         TableName: "user",

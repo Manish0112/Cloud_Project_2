@@ -64,7 +64,6 @@ router.get('/files',ensureAuthenticated,(req,res)=>{
 router.get('/listUsers',ensureAuthenticated,(req,res)=>{
 
     const currentuser =req.user;
-    const email = req.user.email;
 
     var params = {
         TableName: 'user',

@@ -2,21 +2,9 @@ const express=require('express');
 const router=express.Router();
 const { ensureAuthenticated }= require('./../config/auth');
 const AWS = require('aws-sdk');
-const nodeMailer = require('nodemailer');
 
 //dynamoDb
 const dynamoDbObj = require('./../models/connect');
-
-//For mail
-var transporter = nodeMailer.createTransport({
-    service: 'gmail',
-    port: 465,
-    secure: true,
-    auth: {
-           user: 'manishlokhande96@gmail.com',
-           pass: 'manish9004945479'
-       }
-   });
 
 //view schedules
 router.get('/view',ensureAuthenticated,(req,res)=>{
@@ -229,22 +217,6 @@ router.post('/edit', (req,res)=>{
         var input = {
             'fileName': fileName, 'activeFlag' : 'Y'
         };
-
-        //send mail confirmation
-        const mailOptions = {
-            from: 'manishlokhande96@gmail.com', // sender address
-            to: 'manishlokhande111@gmail.com', // list of receivers
-            subject: 'Activation of the schedule', // Subject line
-            html: '<p>Your schedule for the uploaded prescription is activated.</p>'// plain text body
-        };
-
-        transporter.sendMail(mailOptions, function (err, info) {
-            if(err)
-              console.log(err)
-            else
-              console.log(info);
-         });
-
 
         //update in dyanamo
         var params = {
