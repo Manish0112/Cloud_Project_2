@@ -13,8 +13,8 @@ var transporter = nodeMailer.createTransport({
     port: 465,
     secure: true,
     auth: {
-           user: 'manishlokhande111@gmail.com',
-           pass: 'M@nish123'
+           user: 'manishlokhande96@gmail.com',
+           pass: 'manish9004945479'
        }
    });
 
@@ -33,8 +33,8 @@ router.get('/view',ensureAuthenticated,(req,res)=>{
     }
     else{
 
-        //get schedule from dynamodb
-        var params = {
+    //get schedule from dynamodb
+    var params = {
         TableName: 'prescriptions',
         FilterExpression: "#sn = :i",
         ExpressionAttributeNames:{
@@ -232,8 +232,8 @@ router.post('/edit', (req,res)=>{
 
         //send mail confirmation
         const mailOptions = {
-            from: 'manishlokhande111@gmail.com', // sender address
-            to: 'manishlokhande96@gmail.com', // list of receivers
+            from: 'manishlokhande96@gmail.com', // sender address
+            to: 'manishlokhande111@gmail.com', // list of receivers
             subject: 'Activation of the schedule', // Subject line
             html: '<p>Your schedule for the uploaded prescription is activated.</p>'// plain text body
         };

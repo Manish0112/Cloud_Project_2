@@ -37,12 +37,7 @@ var errormessage="";
 
 router.post('/', async (req, res) => {
   
-  //console.log(str.indexOf('REFIILS:'));
-  //console.log(str.indexOf('By'));
-  //console.log(str.substr(str.indexOf('REFIILS:')+8,(str.indexOf('By'))-8).trim());
-  //console.log(str.substr(str.indexOf('By')+2));
-  
-      upload(req, res, (err) => {
+  upload(req, res, (err) => {
      //File Upload started
     var startDate = new Date();
     var input={};
@@ -50,10 +45,7 @@ router.post('/', async (req, res) => {
      const email = req.user.email;
       const name = req.user.name;
        //get user details 
-//       const email = "pankajhpatil21@gmail.com";
-//       const name = "admin";
- 
-  
+
       const file = req.file;
 
       if(!file){
