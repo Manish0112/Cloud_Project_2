@@ -202,7 +202,7 @@ router.post('/edit', (req,res)=>{
     
             if (err){ throw err}
             else{
-                res.render('addSchedule',{
+                res.render('addschedule',{
                     user: user,
                     data: data.Item,
                     editFlag: editFlag,
