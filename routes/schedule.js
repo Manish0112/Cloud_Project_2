@@ -96,7 +96,7 @@ router.post('/add', (req,res)=>{
     }
     
     if(errors.length > 0){
-        res.render('addSchedule',{
+        res.render('addschedule',{
             user: req.user,
             errors,
             tablet,
