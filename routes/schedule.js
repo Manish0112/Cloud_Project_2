@@ -15,36 +15,43 @@ router.get('/view',ensureAuthenticated,(req,res)=>{
     const currentuser =req.user;
     const email = req.user.email;
     
-    // Files.find({ email : req.user.email },(err, data) => {
-        console.log('currentuser'+currentuser);
+    if(currentuser.name == 'admin'){
+        
+        var params = {
+            TableName: 'files'
+        };
+
+    }
+    else{
+
         //get schedule from dynamodb
         var params = {
         TableName: 'files',
-        FilterExpression: "#sn <> :i",
+        FilterExpression: "#sn = :i",
         ExpressionAttributeNames:{
-            "#sn": "name"
+            "#sn": "email"
         },
         ExpressionAttributeValues : {
-            // ':i'  : 'mySchedule-1574717348492'
-            ':i'  : ' '
+            ':i'  : email
         }
         };
+    }
 
+    dynamoDbObj.scan(params, function (err, filedata) {
+            
+        if (err){ throw err}
+        else{
+            
+            res.render('schedule',{
         
-        dynamoDbObj.scan(params, function (err, filedata) {
-            
-            if (err){ throw err}
-            else{
-                
-                res.render('schedule',{
-            
-                    user: currentuser,
-                    data: filedata.Items,
-                    logins: {}
-                })
-            }
-        })
-    // })
+                user: currentuser,
+                data: filedata.Items,
+                logins: {}
+            })
+        }
+    })
+     
+   
 });
 
 //add shedule manually
@@ -53,16 +60,6 @@ router.get('/add',ensureAuthenticated,(req,res)=>{
     const currentuser =req.user;
     const email = req.user.email;
     
-    // Files.find({ email : req.user.email },(err, data) => {
-        
-    //     res.render('addschedule',{
-            
-    //         user: currentuser,
-    //         data: data,
-    //         editFlag:false,
-    //         logins: {}
-    //     })
-    // })
     var params = {
         TableName: 'files',
         FilterExpression: "#sn <> :i",

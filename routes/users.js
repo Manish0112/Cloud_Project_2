@@ -58,70 +58,37 @@ router.post('/register', (req,res)=>{
                 if (err){ throw err}
                 else{
                     if( Object.keys(data).length > 0){
-
-                        errors.push({ msg:'Email is already registered' });
-                            res.render('register',{
-                                errors,
-                                name,
-                                email,
-                                password,
-                                password2
-                        });
+                    errors.push({ msg:'Email is already registered' });
+                        res.render('register',{
+                            errors,
+                            name,
+                            email,
+                            password,
+                            password2
+                    });
                     }
-                    else{
+                else{
 
-                        // var hashedPwd = bcrypt.genSalt(10, (err,salt) => 
-                        // bcrypt.hash(password, salt, (err,hash) => {
-                        //     if(err) throw err;
-                        //     hashedPwd=hash;      
-                        // }));
-                        // console.log(hashedPwd);
-            
-
-                        // const newUser = new User({
-                        //     name,
-                        //     email,
-                        //     password,
-                        //     level: 'U'
-                        // });
+                    //update in dynamodb
+                    var input = {
+                        'email': email, 'name': name,
+                        'level': 'U', 'password': password
+                    };
+                    var params = {
+                        TableName: "user",
+                        Item:  input
+                    };
         
+                    dynamoDbObj.put(params, function (err, data) {
         
-                        //Hash password
-                        // bcrypt.genSalt(10, (err,salt) => 
-                        //     bcrypt.hash(newUser.password, salt, (err,hash) => {
-                        //         if(err) throw err;
-                        //         //set password to hashed
-                        //         newUser.password=hash;
-                        //         //save user
-                        //         newUser.save()
-                        //         .then(user => {
-                        //             console.log('User registered in Mongo');
-                        //         })
-                        //         .catch(err=>console.log(err));
-        
-        
-                        // }))
-
-                        //update in dynamodb
-                        var input = {
-                            'email': email, 'name': name,
-                            'level': 'U', 'password': password
-                        };
-                        var params = {
-                            TableName: "user",
-                            Item:  input
-                        };
-            
-                        dynamoDbObj.put(params, function (err, data) {
-            
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                req.flash('success_msg','You are now registered!!');
-                                res.redirect('/users/login');
-                            }
-                        });
-                    }
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            req.flash('success_msg','You are now registered!!');
+                            res.redirect('/users/login');
+                        }
+                    });
+                }
                 }
             })
         } 
@@ -163,5 +130,15 @@ router.get('/auth/facebook',
 router.get('/auth/facebook/callback',passport.authenticate('facebook'), (req,res,next) => {
     res.redirect('/dashboard');
 });
+
+router.get('/auth/amazon',
+  passport.authenticate('amazon'));
+
+router.get('/auth/amazon/callback', 
+  passport.authenticate('amazon', { failureRedirect: '/users/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/dashboard');
+  });
 
 module.exports=router;

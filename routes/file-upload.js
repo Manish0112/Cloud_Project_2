@@ -50,7 +50,7 @@ router.post('/', async (req, res) => {
 
 
       //for s3 bucket
-      const s3FileURL = 'https://manish-dropbox.s3.us-east-2.amazonaws.com';
+      const s3FileURL = keys.AwsS3Url;
 
       console.log('Start Bucket');
       let s3bucket = new AWS.S3({
@@ -65,7 +65,7 @@ router.post('/', async (req, res) => {
       var myFileName = file.fieldname+('-')+Date.now();
       //for s3 bucket
       var s3params = {
-          Bucket: 'manish-dropbox',
+          Bucket: keys.bucketName,
           Key: myFileName,
           Body: file.buffer,
           ContentType: file.mimetype,
@@ -95,19 +95,6 @@ router.post('/', async (req, res) => {
 
             const dynamoDbObj = require('./../models/connect');
 
-            // var paramsDb = {
-            //     TableName: "files",
-            //     Item:  input
-            // };
-
-            // dynamoDbObj.put(paramsDb, function (err, data) {
-                
-            //     if (err) {
-            //         console.log(err);
-            //     } else {
-            //         console.log('File uploaded');
-            //     }
-            // });
             AWS.config.update ({
               region: 'us-east-2',
               //accessKeyId: keys.AWS_ACCESS_KEY_ID,
@@ -142,10 +129,9 @@ async function getTextFromImage(params,input) {
       console.log(err);
       }else{
        // console.log(data);
-       // debugger;     
+       
         let student = data;
- //       console.log('#####################################################');
- // var keyArray = Object.keys(student); // extractinh 
+
         qtyfound=false;
         expiryfound=false;
         startfound=false;
@@ -154,7 +140,7 @@ async function getTextFromImage(params,input) {
         getTabDataByTime(student,"MIDDAY");
         getTabDataByTime(student,"EVENING");
         getTabDataByTime(student,"BEDTIME");
-        console.log('#####################################################');
+       
          qtyfound=false;
          expiryfound=false;
          startfound=false;
@@ -169,7 +155,8 @@ async function getTextFromImage(params,input) {
               'fileUrl': input.fileUrl, 'modifiedDate': moment(Date.now()).format("YYYY-MM-DD HH:MM:SS"), 'name': input.name , 'uploadTime' : input.uploadTime,
               'docName': docName, 'tabletName': tabletName, 'morningTabCnt': morningTabCnt, 'middayTabCnt': middayTabCnt, 
               'eveTabCnt': eveTabCnt, 'bedtimeTabCnt': bedtimeTabCnt,
-              'startDate': moment(startDate).format("YYYY-MM-DD"),'endDate': moment(eDate).format("YYYY-MM-DD"), 'expiryDate': moment(expiryDate).format("YYYY-MM-DD")
+              'startDate': moment(startDate).format("YYYY-MM-DD"),'endDate': moment(eDate).format("YYYY-MM-DD"), 'expiryDate': moment(expiryDate).format("YYYY-MM-DD"),
+              'activeFlag' : 'N'
             };
             
             

@@ -9,6 +9,8 @@ const GoogleStrategy = require('passport-google-oauth20');
 //FB oauth
 const FacebookStrategy = require('passport-facebook').Strategy;
 
+const AmazonStrategy = require('passport-amazon').Strategy;
+
 //Load User Model
 // const User = require('./../models/user');
 
@@ -176,4 +178,20 @@ module.exports = function(passport) {
             }
         })
     });
+
+
+    //amazon login
+    passport.use(new AmazonStrategy({
+        clientID: keys.AMAZON_CLIENT_ID,
+        clientSecret: keys.AMAZON_CLIENT_SECRET,
+        securityProfileId: 'amzn1.application.66a54c5df5cb4ddeaaddd4170029bb70',
+        callbackURL: "/users/auth/amazon/callback"
+      },
+      function(accessToken, refreshToken, profile, done) {
+          console.log(profile);
+        // User.findOrCreate({ amazonId: profile.id }, function (err, user) {
+        //   return done(err, user);
+        // });
+      }
+    ));
 }

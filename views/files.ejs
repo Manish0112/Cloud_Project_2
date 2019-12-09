@@ -1,25 +1,28 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="#">Prescriptions</a>
+    <a class="navbar-brand" href="/dashboard"><img src="https://manish-dropbox.s3.us-east-2.amazonaws.com/MedicationLogo.png" alt="Medical Assitance"  width="60" height="60"/></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarColor02">
         <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+            <a class="nav-link" href="#">Welcome, <%=user.name %> <span class="sr-only">(current)</span></a>
+        </li>
         <li class="nav-item active">
-            <a class="nav-link" href="#">Welcome <%=user.name %> <span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/dashboard">Dashboard</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="/schedule/view">My Schedules</a>
-        </li>
-        <% if(user.name == 'admin'){ %>
-            <li class="nav-item">
-                <a class="nav-link" href="/listUsers">Users</a>
-            </li>
-        <%}%>
+            <a class="nav-link" href="/files">Prescriptions</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/schedule/view">Schedules</a>
+          </li>
+          <% if(user.name == 'admin'){ %>
+          <li class="nav-item">
+              <a class="nav-link" href="/listUsers">Users</a>
+          </li>
+          <%}%>
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
         </ul>
         <span class="navbar-text">
         <a href="/users/logout" >Logout</a>
@@ -48,7 +51,7 @@
                     <th scope="row"><%= data.fileName %></th>
                     <td><%= data.uploadTime %></td>
                     <td><a href='<%=cf + data.fileName %>'><i class="medium fas fa-file-download"></i></a></td>
-                    <td><button type='submit' class='btn' name='<%= data.fileUrl %>'>Delete</button></td>
+                    <td><button type='submit' class='btn btn-danger' name='<%= data.fileUrl %>'>Delete</button></td>
                     <input type='hidden' id='email' name='email' value='<%= data.email %>'>
                     <input type='hidden' id='fileUrl' name='fileUrl' value='<%= data.fileUrl %>'>
                 </tr>

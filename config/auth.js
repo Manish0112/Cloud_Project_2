@@ -5,6 +5,6 @@ module.exports = {
         }
 
         req.flash('error_msg','Please login to view this resource');
-        res.redirect('./users/login');
+        res.redirect('http://localhost:5000/users/login');
     }
 }
