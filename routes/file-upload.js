@@ -239,7 +239,9 @@ async function getTabDataByTime(student,text) {
   if (!docfound && jText.indexOf("PRSCBR") >= 0 && student.Blocks[i].BlockType == "LINE"){
     console.log("Prescribed By");
     console.log(jText.replace("PRSCBR:",'').trim());
-    docName=jText.replace("PRSCBR:",'').trim();
+    docName=jText.replace("PRSCBR",'').trim();
+    docName=docName.replace(":",'').trim();
+
     docfound=true;
   }
  
