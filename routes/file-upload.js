@@ -29,6 +29,9 @@ var eveTabCnt=0;
 var bedtimeTabCnt=0;
 var refillQuota=0;
 
+var successmessage="";
+var errormessage="";
+
 
 
 
@@ -83,15 +86,14 @@ router.post('/', async (req, res) => {
           ContentType: file.mimetype,
           ACL: "public-read"
       };
-      s3bucket.upload(s3params, function (err, data) {
+      s3bucket.upload(s3params, async function (err, data) {
         
         if (err) {
-            console.log(err);
+            //console.log(err);
+            req.flash('error_msg','Prescription '+file.originalname+'is not in CSV Pharmasy format/clarity is bad!');
             //res.status(500).json({error: true, Message: err});
         } else {
-            //success
-            req.flash('success_msg','File '+myFileName +' Uploaded!');
-            res.redirect('/dashboard');
+           
 
             //updating in dyanamodb
 
@@ -121,7 +123,26 @@ router.post('/', async (req, res) => {
           };
           //Text processing'
           console.log('printing input');
-          getTextFromImage(params,input);
+          let result=await getTextFromImage(params,input);
+          //console.log(result);
+
+          if(successmessage){
+            console.log('successmessage#################################################');
+            console.log(successmessage);
+            console.log('errormessage'+errormessage);
+            
+            req.flash('success_msg',successmessage);
+       
+          }else{
+            console.log('errormessage#################################################');
+            console.log(successmessage);
+            console.log('errormessage'+errormessage);
+            req.flash('error_msg',errormessage);
+          }
+          successmessage="";
+          errormessage="";
+          res.redirect('/dashboard');
+          
           debugger;   
   
 
@@ -134,11 +155,12 @@ router.post('/', async (req, res) => {
 });
 //Calling textract to extract text from images
 async function getTextFromImage(params,input) {
+  return new Promise((resolve, reject) => {
 
      var textract = new AWS.Textract();
-   let data= await textract.detectDocumentText(params, function (err, data) {
+   textract.detectDocumentText(params, function (err, data) {
        if (err) {
-      console.log(err);
+      console.log('Error in textract');
       }else{
        // console.log(data);
        
@@ -221,14 +243,21 @@ async function getTextFromImage(params,input) {
               let key =  dynamoDbObj.put(paramsDb, function (err, data) {
                 
                 if (err) {
-                    console.log(err);
+                  errormessage='Prescription '+input.fileDesc+' is not in CSV Pharmasy format/clarity is bad!';
+                  resolve(errormessage);
                 } else {
-                    console.log(data);
+                   //success
+                   successmessage='Prescription '+input.fileDesc+'('+input.fileName +') Uploaded!';
+                   resolve(successmessage);
+                  //  console.log(successmessage);
                 }
             });
-      //  console.log('This is after the read call');
+
        }
      });
+    },(errorResponse) => {
+      reject(errormessage)
+  });
 }
 
 async function getTabDataByTime(student,text) {
