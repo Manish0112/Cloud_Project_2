@@ -12,10 +12,19 @@ My Medication
   - [Pankaj Patil](https://www.linkedin.com/in/pankajhpatil/)
   - [Bharat Medarametla](https://www.linkedin.com/in/bharathkmedarametla/)
 - Project Introduction (What the application does, feature list)
-- Sample Demo Screenshots
-- Pre-requisites Set Up
-  - Here include bullet point list of resources one need to configure in their cloud account. (E.g. For AWS: S3 buckets, CloudFront etc)
-  - List of required software to download locally (E.g. Spring, JDK, Eclipse IDE etc. )
-  - Local configuration
-  - How to set up and run project locally?
-  - Here include quick steps on how to compile and run your project on local machine (whichever you used, Mac or Windows either one).
+
+Sample Demo Screenshots
+========================
+- Landing Page
+<img src="https://manish-dropbox.s3.us-east-2.amazonaws.com/Screenshots/Screen+Shot+2019-12-09+at+3.28.54+PM.png" alt="Landing Page" title="Landing Page" align="center" />
+
+- Upload Prescription
+<img src="https://manish-dropbox.s3.us-east-2.amazonaws.com/Screenshots/Screen+Shot+2019-12-09+at+3.29.29+PM.png" alt="Upload Prescription" title="Upload Prescription" align="center" />
+
+- Preview Schedule
+<img src="https://manish-dropbox.s3.us-east-2.amazonaws.com/Screenshots/Screen+Shot+2019-12-09+at+5.17.58+AM.png" alt="Preview Schedule" title="Preview Schedule" align="center" />
+
+- Alexa Display
+
+<img src="https://manish-dropbox.s3.us-east-2.amazonaws.com/Screenshots/IMG_3081.jpg" alt="Preview Schedule" title="Preview Schedule" align="left" height="850" />
+<img src="https://manish-dropbox.s3.us-east-2.amazonaws.com/Screenshots/IMG_3082.jpg" alt="Preview Schedule" title="Preview Schedule" align="right" height="850" /> 
