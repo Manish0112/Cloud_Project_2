@@ -26,5 +26,4 @@ Sample Demo Screenshots
 
 - Alexa Display
 
-<img src="https://manish-dropbox.s3.us-east-2.amazonaws.com/Screenshots/IMG_3081.jpg" alt="Preview Schedule" title="Preview Schedule" align="left" height="850" />
-<img src="https://manish-dropbox.s3.us-east-2.amazonaws.com/Screenshots/IMG_3082.jpg" alt="Preview Schedule" title="Preview Schedule" align="right" height="850" /> 
+
