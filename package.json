@@ -12,7 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "aws-s3": "^2.0.5",
-    "aws-sdk": "^2.585.0",
+    "aws-sdk": "^2.814.0",
     "aws-sns-sms": "^1.0.2",
     "bcryptjs": "^2.4.3",
     "busboy": "^0.3.1",
